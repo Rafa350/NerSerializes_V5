@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publish", "Publish", "{18488C95-A0BC-4F07-8CB1-CC504945F36E}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\Publish.bat = Tools\Publish.bat
+		Tools\Publish.proj = Tools\Publish.proj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{7E12CBFD-E3EA-4DDD-8517-5ED9F23BCA1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSerializer", "NetSerializer\NetSerializer.csproj", "{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{6CDB0388-363E-4A45-9D20-1255EB1FA8DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDB0388-363E-4A45-9D20-1255EB1FA8DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CDB0388-363E-4A45-9D20-1255EB1FA8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CDB0388-363E-4A45-9D20-1255EB1FA8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CDB0388-363E-4A45-9D20-1255EB1FA8DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF} = {7E12CBFD-E3EA-4DDD-8517-5ED9F23BCA1A}
+		{6CDB0388-363E-4A45-9D20-1255EB1FA8DF} = {7E12CBFD-E3EA-4DDD-8517-5ED9F23BCA1A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9F1EB51-1DA8-4DC7-8771-96E1A3F7DD48}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

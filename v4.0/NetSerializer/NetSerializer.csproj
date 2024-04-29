@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MikroPic.NetSerializer.v4</RootNamespace>
+    <AssemblyName>NetSerializer4</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>signature.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DeserializationContext.cs" />
+    <Compile Include="Infrastructure\TypeDescriptor.cs" />
+    <Compile Include="Infrastructure\TypeDescriptorProvider.cs" />
+    <Compile Include="Infrastructure\MultidimensionalIndex.cs" />
+    <Compile Include="Model\PropertySerializationInfo.cs" />
+    <Compile Include="Model\TypeSerializationInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationContext.cs" />
+    <Compile Include="Storage\Bin\BinStorageReader.cs" />
+    <Compile Include="Storage\Bin\BinStorageWriter.cs" />
+    <Compile Include="Storage\Bin\Infrastructure\DataPrefix.cs" />
+    <Compile Include="Storage\JSon\JSonStorageReader.cs" />
+    <Compile Include="Storage\JSon\JSonStorageWriter.cs" />
+    <Compile Include="Storage\StorageReader.cs" />
+    <Compile Include="Storage\StorageWriter.cs" />
+    <Compile Include="Storage\Xml\Infrastructure\XmlReaderHelper.cs" />
+    <Compile Include="Storage\TypeNameConverter.cs" />
+    <Compile Include="Storage\Xml\Infrastructure\XmlWriterHelper.cs" />
+    <Compile Include="Storage\ITypeNameConverter.cs" />
+    <Compile Include="Storage\Xml\XmlReaderPreprocessor.cs" />
+    <Compile Include="Storage\Xml\XmlStorageReader.cs" />
+    <Compile Include="Storage\Xml\XmlStorageReaderSettings.cs" />
+    <Compile Include="Storage\Xml\XmlStorageWriter.cs" />
+    <Compile Include="Deserializer.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="Storage\Xml\XmlStorageWriterSettings.cs" />
+    <Compile Include="TypeRegister.cs" />
+    <Compile Include="TypeSerializers\ArraySerializer.cs" />
+    <Compile Include="TypeSerializers\DictionarySerializer.cs" />
+    <Compile Include="TypeSerializers\ListSerializer.cs" />
+    <Compile Include="TypeSerializers\ITypeSerializer.cs" />
+    <Compile Include="TypeSerializers\ClassSerializer.cs" />
+    <Compile Include="TypeSerializers\ValueSerializer.cs" />
+    <Compile Include="TypeSerializers\SerializerBase.cs" />
+    <Compile Include="TypeSerializers\StructSerializer.cs" />
+    <Compile Include="TypeSerializers\TypeSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="signature.pfx" />
+    <EmbeddedResource Include="Storage\Xml\DataSchema.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="transform.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

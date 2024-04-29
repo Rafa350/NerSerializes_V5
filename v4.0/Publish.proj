@@ -1,0 +1,36 @@
+<Project 
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+    DefaultTarget="Publish">
+
+    <!-- Opcions -->
+    <PropertyGroup>
+        <BuildVersion>v4.1</BuildVersion>
+        <NetVersion>NET4.8</NetVersion>
+        <Configuration>Release</Configuration>
+    </PropertyGroup>
+    
+    <!-- Directoris del projecte -->
+    <PropertyGroup>
+        <SourceDirectory>bin\$(Configuration)\</SourceDirectory>
+        <DestinationDirectory>..\Assemblies\NetSerializer\$(BuildVersion)\$(NetVersion)\</DestinationDirectory>
+    </PropertyGroup>
+    
+    <!-- Fitxers a publicar -->
+    <ItemGroup>
+        <SourceFiles Include="$(SourceDirectory)NetSerializer4.dll"/>
+    </ItemGroup>
+    
+    <!-- Tasca de publicacio dels fitxers -->
+    <Target 
+        Name="Publish"
+        Inputs="@(SourceFiles)"
+        Outputs="@(SourceFiles->'$(DestinationDirectory)%(FileName)%(Extension)')">
+        <MakeDir
+            Directories="$(DestinationDirectory)"
+            Condition="!Exists('$(DestinationDirectory)')"/>
+        <Copy 
+            SourceFiles="@(SourceFiles)"
+            DestinationFolder="$(DestinationDirectory)"/>
+    </Target>
+    
+</Project>
