@@ -1,8 +1,8 @@
-﻿namespace MikroPic.NetSerializer.v4.TypeSerializers {
+﻿namespace NetSerializer.v4.TypeSerializers {
 
     using System;
     using System.ComponentModel;
-    using MikroPic.NetSerializer.v4.Storage;
+    using NetSerializer.v4.Storage;
 
     /// <summary>
     /// Serializa i deserializa tipos primitivos, enumeradores, DateTime y TimeStamp.

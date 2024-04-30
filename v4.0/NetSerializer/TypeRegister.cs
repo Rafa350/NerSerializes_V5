@@ -1,8 +1,8 @@
-﻿namespace MikroPic.NetSerializer.v4 {
+﻿namespace NetSerializer.v4 {
 
     using System;
     using System.Collections.Generic;
-    using MikroPic.NetSerializer.v4.Model;
+    using NetSerializer.v4.Model;
 
     public sealed class TypeRegister {
 

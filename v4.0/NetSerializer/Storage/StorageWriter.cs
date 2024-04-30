@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Storage {
+﻿namespace NetSerializer.v4.Storage {
 
     using System;
     using System.Collections.Generic;

@@ -1,8 +1,8 @@
-﻿namespace MikroPic.NetSerializer.v4.TypeSerializers {
+﻿namespace NetSerializer.v4.TypeSerializers {
 
     using System;
-    using MikroPic.NetSerializer.v4.Infrastructure;
-    using MikroPic.NetSerializer.v4.Storage;
+    using NetSerializer.v4.Infrastructure;
+    using NetSerializer.v4.Storage;
 
     /// <summary>
     /// Serialitzador d'arrays CLI.

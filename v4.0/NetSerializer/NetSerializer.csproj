@@ -8,7 +8,7 @@
     <ProjectGuid>{6D6CF5B8-052F-4F65-AFB3-FEBFAB8C61EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MikroPic.NetSerializer.v4</RootNamespace>
+    <RootNamespace>NetSerializer.v4</RootNamespace>
     <AssemblyName>NetSerializer4</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

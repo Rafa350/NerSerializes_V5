@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Storage.Xml {
+﻿namespace NetSerializer.v4.Storage.Xml {
 
     using System;
     using System.Collections.Generic;
@@ -8,14 +8,14 @@
     using System.Text;
     using System.Xml;
     using System.Xml.Schema;
-    using MikroPic.NetSerializer.v4.Storage.Xml.Infrastructure;
+    using NetSerializer.v4.Storage.Xml.Infrastructure;
 
     /// <summary>
     /// Lector de dades en format XML.
     /// </summary>
     public sealed class XmlStorageReader: StorageReader {
 
-        private const string schemaResourceName = "Media.NetSerializer.v4.Storage.Xml.DataSchema.xsd";
+        private const string schemaResourceName = "NetSerializer.v4.Storage.Xml.DataSchema.xsd";
 
         private readonly ITypeNameConverter typeNameConverter = new TypeNameConverter();
         private readonly Stream stream;

@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29215.179
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publish", "Publish", "{18488C95-A0BC-4F07-8CB1-CC504945F36E}"
 	ProjectSection(SolutionItems) = preProject
-		Tools\Publish.bat = Tools\Publish.bat
-		Tools\Publish.proj = Tools\Publish.proj
+		Publish.bat = Publish.bat
+		Publish.proj = Publish.proj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{7E12CBFD-E3EA-4DDD-8517-5ED9F23BCA1A}"

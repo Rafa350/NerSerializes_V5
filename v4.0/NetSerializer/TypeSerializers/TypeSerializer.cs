@@ -1,8 +1,8 @@
-﻿namespace MikroPic.NetSerializer.v4.TypeSerializers {
+﻿namespace NetSerializer.v4.TypeSerializers {
 
     using System;
     using System.Collections.Generic;
-    using MikroPic.NetSerializer.v4.Storage;
+    using NetSerializer.v4.Storage;
 
     /// <summary>
     /// Serializador de tipos. Serializa un objeto mediante la lista de 

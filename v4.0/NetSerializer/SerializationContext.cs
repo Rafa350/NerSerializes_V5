@@ -1,8 +1,8 @@
-﻿namespace MikroPic.NetSerializer.v4 {
+﻿namespace NetSerializer.v4 {
 
     using System;
-    using MikroPic.NetSerializer.v4.Storage;
-    using MikroPic.NetSerializer.v4.TypeSerializers;
+    using NetSerializer.v4.Storage;
+    using NetSerializer.v4.TypeSerializers;
 
     /// <summary>
     /// Context de serialitzacio.

@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Storage.Xml.Infrastructure {
+﻿namespace NetSerializer.v4.Storage.Xml.Infrastructure {
 
     using System;
     using System.Xml;

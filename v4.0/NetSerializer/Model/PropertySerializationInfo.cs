@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Model {
+﻿namespace NetSerializer.v4.Model {
 
     using System;
 

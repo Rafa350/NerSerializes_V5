@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Storage.JSon {
+﻿namespace NetSerializer.v4.Storage.JSon {
 
     using System;
     using System.Collections.Generic;

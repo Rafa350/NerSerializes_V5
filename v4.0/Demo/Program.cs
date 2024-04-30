@@ -3,12 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using MikroPic.NetSerializer.v4;
-    using MikroPic.NetSerializer.v4.TypeSerializers;
-    using MikroPic.NetSerializer.v4.Storage;
-    using MikroPic.NetSerializer.v4.Storage.Xml;
-    using MikroPic.NetSerializer.v4.Storage.Bin;
-    using System.Diagnostics;
+    using NetSerializer.v4;
+    using NetSerializer.v4.Storage;
+    using NetSerializer.v4.Storage.Bin;
+    using NetSerializer.v4.Storage.Xml;
+    using NetSerializer.v4.TypeSerializers;
 
     public enum Numbers {
         Zero,

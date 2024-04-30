@@ -1,11 +1,11 @@
-﻿namespace MikroPic.NetSerializer.v4.Storage.Xml {
+﻿namespace NetSerializer.v4.Storage.Xml {
 
     using System;
     using System.ComponentModel;
     using System.IO;
     using System.Text;
     using System.Xml;
-    using MikroPic.NetSerializer.v4.Storage.Xml.Infrastructure;
+    using NetSerializer.v4.Storage.Xml.Infrastructure;
 
     /// <summary>
     /// Escriptor de dades en format XML.

@@ -12,7 +12,7 @@
     <!-- Directoris del projecte -->
     <PropertyGroup>
         <SourceDirectory>bin\$(Configuration)\</SourceDirectory>
-        <DestinationDirectory>..\Assemblies\NetSerializer\$(BuildVersion)\$(NetVersion)\</DestinationDirectory>
+        <DestinationDirectory>..\..\Assemblies\NetSerializer\$(BuildVersion)\$(NetVersion)\</DestinationDirectory>
     </PropertyGroup>
     
     <!-- Fitxers a publicar -->

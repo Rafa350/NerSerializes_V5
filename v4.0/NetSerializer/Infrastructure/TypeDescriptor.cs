@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.Infrastructure {
+﻿namespace NetSerializer.v4.Infrastructure {
 
     using System;
     using System.Collections.Generic;

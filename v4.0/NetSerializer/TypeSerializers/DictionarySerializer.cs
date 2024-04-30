@@ -1,4 +1,4 @@
-﻿namespace MikroPic.NetSerializer.v4.TypeSerializers {
+﻿namespace NetSerializer.v4.TypeSerializers {
 
     using System;
     using System.Collections;
