@@ -38,7 +38,7 @@ namespace NetSerializer.V5.TypeSerializers {
                     // Afegeix si es una clase derivada de 'CustomTypeSerializer'.
                     //
                     if (type.IsClass && !type.IsAbstract && typeof(CustomClassSerializer).IsAssignableFrom(type)) {
-                        ITypeSerializer serializer = (ITypeSerializer)Activator.CreateInstance(type);
+                        var serializer = (ITypeSerializer)Activator.CreateInstance(type);
                         _serializerInstances.Add(serializer);
                     }
                 }

@@ -70,8 +70,7 @@ namespace NetSerializer.V5 {
         /// 
         public SerializationContext Write(string name, object value, Type type) {
 
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             var typeSerializer = GetTypeSerializer(type);
             Debug.Assert(typeSerializer != null);

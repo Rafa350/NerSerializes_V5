@@ -37,6 +37,46 @@
         public abstract void WriteValue(string name, object value);
 
         /// <summary>
+        /// Escriu un valor boolean.
+        /// </summary>
+        /// <param name="name">El Nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteBoolean(string name, bool value);
+
+        /// <summary>
+        /// Escriu un valor int.
+        /// </summary>
+        /// <param name="name">El Nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteInt(string name, int value);
+
+        /// <summary>
+        /// Escriu un valor float.
+        /// </summary>
+        /// <param name="name">El Nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteFloat(string name, float value);
+
+        /// <summary>
+        /// Escriu un valor double.
+        /// </summary>
+        /// <param name="name">El Nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteDouble(string name, double value);
+
+        /// <summary>
+        /// Escriu un valor string.
+        /// </summary>
+        /// <param name="name">El Nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteString(string name, string value);
+
+        /// <summary>
         /// Escriu un valor null.
         /// </summary>
         /// <param name="name">El Nom.</param>

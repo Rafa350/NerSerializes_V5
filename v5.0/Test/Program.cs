@@ -122,8 +122,8 @@ namespace Test {
 
             // Es salta la seguent propietat despres de 'Date'
             //
-            if (propertyDescriptor.Name == "Date")
-                context.Reader.Skip("ToSkip");
+            //if (propertyDescriptor.Name == "Date")
+              //  context.Reader.Skip("ToSkip");
         }
     }
 
@@ -133,16 +133,15 @@ namespace Test {
 
             var x = new TestClass();
 
-            //XmlSerialize(@"c:\temp\ns_output.xml", x);
-            //var y = XmlDeserialize(@"c:\temp\ns_output.xml");
+            XmlSerialize(@"c:\temp\ns_output.xml", x);
+            var y = XmlDeserialize(@"c:\temp\ns_output.xml");
         }
 
         private static void XmlSerialize(string fileName, object obj) {
 
-            var serializer = new Serializer();
-
             using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None)) {
                 using (var writer = new XmlFormatWriter(stream)) {
+                    var serializer = new Serializer();
                     serializer.Serialize(writer, obj);
                 }
             }
@@ -150,10 +149,9 @@ namespace Test {
 
         private static object XmlDeserialize(string fileName) {
 
-            var serializer = new Serializer();
-
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.None)) {
                 using (var reader = new XmlFormatReader(stream)) {
+                    var serializer = new Serializer();
                     return serializer.Deserialize(reader, typeof(TestClass), "root");
                 }
             }

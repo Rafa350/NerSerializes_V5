@@ -27,6 +27,10 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Aqui el tipus del objecte 'obj' ja es conegut i per tant es posible que 'this' sigui una clase
+        /// derivada de 'CustomClassSerializer'.
+        /// </remarks>
         /// 
         public override void Serialize(SerializationContext context, string name, Type type, object obj) {
 
@@ -49,13 +53,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                     id = context.RegisterObject(obj);
                     writer.WriteObjectHeader(name, obj, id);
 
-                    // Si te un serialitzador especific, l'utilitza
-                    //
-                    var serializer = context.GetTypeSerializer(obj.GetType());
-                    if (serializer is CustomClassSerializer customSerializer)
-                        customSerializer.SerializeObject(context, obj);
-                    else
-                        SerializeObject(context, obj);
+                    SerializeObject(context, obj);
 
                     writer.WriteObjectTail();
                 }
@@ -65,6 +63,10 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Com el objecte 'obj' a carregar no es conegut, el seu tipus sera el de la seva clase base, per tant
+        /// un cop es conegui el tipus cal cridar al serialitzador adecuat si en te un propi.
+        /// </remarks>
         /// 
         public override void Deserialize(DeserializationContext context, string name, Type type, out object obj) {
 
@@ -86,11 +88,13 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                 obj = CreateObject(context, objectType);
                 context.Register(obj);
 
-                // Si te un serialitzador especific, l'utilitza
+                // Es deserialitza en dos pasos, un amb ClassSerializer i despres amb CustomClassSerializer.
+                // Un cop conegut el tipus del objecte, si te un serialitzador especific, l'utilitza
                 //
-                var serializer = context.GetTypeSerializer(obj.GetType());
-                if (serializer is CustomClassSerializer customSerializer)
+                var serializer = context.GetTypeSerializer(objectType);
+                if (serializer is CustomClassSerializer customSerializer) {
                     customSerializer.DeserializeObject(context, obj);
+                }
                 else
                     DeserializeObject(context, obj);
 
@@ -131,9 +135,13 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
             var type = obj.GetType();
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
 
+            // Si pot, es serialitza ell mateix.
+            //
             if (typeDescriptor.CanSerialize)
                 typeDescriptor.Serialize(context, obj);
 
+            // En cas contrari es serialitzen totes les propietats.
+            //
             else {
                 foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
                     if (CanProcessProperty(propertyDescriptor) && CanSerializeProperty(context, propertyDescriptor))
@@ -153,8 +161,11 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
             if (propertyDescriptor.CanGetValue) {
 
+                // Obte el tipus de la propietat del valor, que pot ser una clase derivada. Si es null,
+                // obte el tipus base de la propietat.
+                //
                 var value = propertyDescriptor.GetValue(obj);
-                var type = propertyDescriptor.Type;
+                var type = value == null ? propertyDescriptor.Type : value.GetType();
 
                 var serializer = context.GetTypeSerializer(type);
                 serializer.Serialize(context, propertyDescriptor.Name, type, value);
@@ -184,9 +195,13 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
             var type = obj.GetType();
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
 
+            // Si pot, es deserialitza ell mateix.
+            //
             if (typeDescriptor.CanDeserialize)
                 typeDescriptor.Deserialize(context, obj);
 
+            // En cas contrari, es deserialitzen totes les propietats.
+            //
             else {
                 foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
                     if (CanProcessProperty(propertyDescriptor) && CanDeserializeProperty(context, propertyDescriptor))
@@ -195,7 +210,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         }
 
         /// <summary>
-        /// Deserialitzacio per defecte d'una propietat.
+        /// Deserialitzacio per defecte d'una propietat. Nomes es pot deserialitzar si te un 'setter'.
         /// </summary>
         /// <param name="reader">Objecte per la lectura de dades.</param>
         /// <param name="obj">L'objecte.</param>

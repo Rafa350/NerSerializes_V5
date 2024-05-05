@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace NetSerializer.V5.Descriptors {
 
     public sealed class TypeDescriptorProvider {
 
-        private readonly Dictionary<Type, TypeDescriptor> _cache = new Dictionary<Type, TypeDescriptor>();
+        private readonly Dictionary<Type, TypeDescriptor> _cache = [];
         private static TypeDescriptorProvider _instance;
 
         /// <summary>
@@ -26,7 +25,7 @@ namespace NetSerializer.V5.Descriptors {
         /// 
         public TypeDescriptor GetDescriptor(Type type) {
 
-            Debug.Assert(type != null);
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             if (!_cache.TryGetValue(type, out TypeDescriptor typeDescriptor)) {
                 typeDescriptor = new TypeDescriptor(type);
@@ -42,8 +41,7 @@ namespace NetSerializer.V5.Descriptors {
         /// 
         public static TypeDescriptorProvider Instance {
             get {
-                if (_instance == null)
-                    _instance = new TypeDescriptorProvider();
+                _instance ??= new TypeDescriptorProvider();
                 return _instance;
             }
         }

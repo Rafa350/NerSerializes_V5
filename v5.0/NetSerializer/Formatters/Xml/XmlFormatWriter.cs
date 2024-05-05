@@ -30,7 +30,9 @@ namespace NetSerializer.V5.Formatters.Xml {
         /// 
         public XmlFormatWriter(Stream stream, XmlFormatWriterSettings settings = null) {
 
-            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+
+            _stream = stream;
             _settings = settings ?? new XmlFormatWriterSettings();
 
             if (!stream.CanWrite)
@@ -44,8 +46,7 @@ namespace NetSerializer.V5.Formatters.Xml {
         /// 
         public override void Initialize(int version) {
 
-            if (version < 0)
-                throw new ArgumentOutOfRangeException(nameof(version));
+            ArgumentOutOfRangeException.ThrowIfNegative(version, nameof(version));
 
             var writerSettings = new XmlWriterSettings {
                 Encoding = _settings.Encoding,
@@ -108,6 +109,50 @@ namespace NetSerializer.V5.Formatters.Xml {
                 _writer.WriteAttribute("name", name);
 
             _writer.WriteValue(ConvertToString(value));
+
+            _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteBoolean(string name, bool value) {
+
+            WriteString(name, XmlConvert.ToString(value));
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteInt(string name, int value) {
+
+            WriteString(name, XmlConvert.ToString(value));
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteFloat(string name, float value) {
+
+            WriteString(name, XmlConvert.ToString(value));
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteDouble(string name, double value) {
+
+            WriteString(name, XmlConvert.ToString(value));
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteString(string name, string value) {
+
+            if (_settings.UseNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_settings.CompactMode ? "v" : "value");
+            if (_settings.UseNames)
+                _writer.WriteAttribute("name", name);
+
+            _writer.WriteValue(value);
 
             _writer.WriteEndElement();
         }

@@ -29,18 +29,15 @@ namespace NetSerializer.V5 {
         /// 
         public void Serialize(FormatWriter writer, object obj, string name = "root", int version = 0) {
 
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
-
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+            ArgumentNullException.ThrowIfNull(writer, nameof(writer));
+            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
 
             writer.Initialize(version);
             try {
                 var context = new SerializationContext(writer, _typeSerializerProvider);
-
-                var typeSerializer = context.GetTypeSerializer(obj.GetType());
-                typeSerializer.Serialize(context, name, obj.GetType(), obj);
+                var type = obj.GetType();
+                var typeSerializer = context.GetTypeSerializer(type);
+                typeSerializer.Serialize(context, name, type, obj);
             }
             finally {
                 writer.Close();
@@ -57,11 +54,8 @@ namespace NetSerializer.V5 {
         /// 
         public object Deserialize(FormatReader reader, Type type, string name) {
 
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
-
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            ArgumentNullException.ThrowIfNull(reader, nameof(reader));
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             reader.Initialize();
             try {

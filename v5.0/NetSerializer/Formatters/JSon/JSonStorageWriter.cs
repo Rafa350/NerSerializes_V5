@@ -8,6 +8,36 @@ namespace NetSerializer.V5.Formatters.JSon {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
+        /// 
+        public override void WriteBoolean(string name, bool value) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteInt(string name, int value) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteFloat(string name, float value) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteDouble(string name, double value) {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteString(string name, string value) {
+            throw new NotImplementedException();
+        }
+
         public override void WriteNull(string name) {
             throw new NotImplementedException();
         }
