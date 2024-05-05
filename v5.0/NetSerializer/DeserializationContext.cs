@@ -10,7 +10,7 @@ namespace NetSerializer.V5 {
 
         private readonly ITypeSerializerProvider _typeSerializerProvider;
         private readonly FormatReader _formatter;
-        private readonly List<object> _register = new List<object>();
+        private readonly List<object> _register = [];
 
         /// <summary>
         /// Constructor.
@@ -19,9 +19,6 @@ namespace NetSerializer.V5 {
         /// <param name="typeSerializerProvider">El proveidor de serialitzadors.</param>
         /// 
         public DeserializationContext(FormatReader formatter, ITypeSerializerProvider typeSerializerProvider) {
-
-            Debug.Assert(formatter != null);
-            Debug.Assert(typeSerializerProvider != null);
 
             _formatter = formatter;
             _typeSerializerProvider = typeSerializerProvider;
@@ -34,8 +31,6 @@ namespace NetSerializer.V5 {
         /// 
         public void Register(object obj) {
 
-            Debug.Assert(obj != null);
-
             _register.Add(obj);
         }
 
@@ -45,7 +40,7 @@ namespace NetSerializer.V5 {
         /// <param name="id">El identificador.</param>
         /// <returns>L'objecte.</returns>
         /// 
-        public object GetObject(int id) =>
+        public object? GetObject(int id) =>
             (id < 0) || (id >= _register.Count) ? null : _register[id];
 
         /// <summary>
@@ -54,7 +49,7 @@ namespace NetSerializer.V5 {
         /// <param name="type">El tipus.</param>
         /// <returns>El serialitzador. Null si no el troba.</returns>
         /// 
-        public ITypeSerializer GetTypeSerializer(Type type) =>
+        public ITypeSerializer? GetTypeSerializer(Type type) =>
             _typeSerializerProvider.GetTypeSerializer(type);
 
         /// <summary>
@@ -65,7 +60,7 @@ namespace NetSerializer.V5 {
         /// <param name="type">El tipus del objecte.</param>
         /// <returns>This.</returns>
         /// 
-        public DeserializationContext Read(string name, out object value, Type type) {
+        public DeserializationContext Read(string name, out object? value, Type type) {
 
             var typeSerializer = GetTypeSerializer(type);
             Debug.Assert(typeSerializer != null);
@@ -83,14 +78,15 @@ namespace NetSerializer.V5 {
         /// <typeparam name="T">El tipus del objecte.</typeparam>
         /// <returns>This.</returns>
         /// 
-        public DeserializationContext Read<T>(string name, out T value) {
+        public DeserializationContext Read<T>(string name, out T? value) {
 
-            Read(name, out object o, typeof(T));
-            value = (T)o;
+            Read(name, out object? o, typeof(T));
+            value = (T?) o;
 
             return this;
         }
 
+        /*
         /// <summary>
         /// Deserialitza un valor 'bool'
         /// </summary>
@@ -157,10 +153,10 @@ namespace NetSerializer.V5 {
             return value;
         }
 
-        public T ReadObject<T>(string name) {
+        public T? ReadObject<T>(string name) {
 
-            Read(name, out object o, typeof(T));
-            return (T)o;
+            Read(name, out object? o, typeof(T));
+            return (T?)o;
         }
 
         public T ReadEnum<T>(string name) {
@@ -173,6 +169,7 @@ namespace NetSerializer.V5 {
 
             _formatter.Skip(name);
         }
+        */
 
         /// <summary>
         /// Obte el formatejador.

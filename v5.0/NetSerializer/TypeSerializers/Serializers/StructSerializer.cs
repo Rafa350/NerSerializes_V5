@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using NetSerializer.V5.Descriptors;
 
 namespace NetSerializer.V5.TypeSerializers.Serializers {
@@ -12,11 +13,10 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object obj) {
+        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
             if (!CanProcess(type))
-                throw new InvalidOperationException(
-                    String.Format("No es posible serializar el tipo '{0}'.", type));
+                throw new InvalidOperationException($"No es posible serializar el tipo '{type}'.");
 
             var writer = context.Writer;
 
@@ -32,7 +32,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Deserialize(DeserializationContext context, string name, Type type, out object obj) {
+        public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(
@@ -45,8 +45,13 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
             else {
                 reader.ReadStructHeader(name, type);
+
                 obj = Activator.CreateInstance(type);
+                if (obj == null)
+                    throw new InvalidOperationException($"No es posible crear una instancia de '{type}'.");
+                
                 DeserializeStruct(context, obj);
+
                 reader.ReadStructTail();
             }
         }
@@ -76,8 +81,11 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         protected virtual void SerializeProperty(SerializationContext context, object obj, PropertyDescriptor propertyDescriptor) {
 
             if (propertyDescriptor.CanGetValue) {
-                var serializer = context.GetTypeSerializer(propertyDescriptor.Type);
-                serializer.Serialize(context, propertyDescriptor.Name, propertyDescriptor.Type, propertyDescriptor.GetValue(obj));
+
+                var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
+                Debug.Assert(typeSerializer != null);
+                
+                typeSerializer.Serialize(context, propertyDescriptor.Name, propertyDescriptor.Type, propertyDescriptor.GetValue(obj));
             }
         }
 
@@ -106,8 +114,11 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         protected virtual void DeserializeProperty(DeserializationContext context, object obj, PropertyDescriptor propertyDescriptor) {
 
             if (propertyDescriptor.CanSetValue) {
+                
                 var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
-                typeSerializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object value);
+                Debug.Assert(typeSerializer != null);
+
+                typeSerializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object? value);
                 propertyDescriptor.SetValue(obj, value);
             }
         }

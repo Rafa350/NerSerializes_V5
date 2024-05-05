@@ -23,7 +23,7 @@ namespace NetSerializer.V5.TypeSerializers {
         /// <param name="type">El tipus del objecte a serioalitzar.</param>
         /// <param name="obj">L'objecte a serailitzar.</param>
         /// 
-        void Serialize(SerializationContext context, string name, Type type, object obj);
+        void Serialize(SerializationContext context, string name, Type type, object? obj);
 
         /// <summary>
         /// Deserializa un objete.
@@ -33,6 +33,6 @@ namespace NetSerializer.V5.TypeSerializers {
         /// <param name="type">Tipus del objecte a deserialitzar.</param>
         /// <returns>L'objecte deserialitzat.</returns>
         /// 
-        void Deserialize(DeserializationContext context, string name, Type type, out object obj);
+        void Deserialize(DeserializationContext context, string name, Type type, out object? obj);
     }
 }

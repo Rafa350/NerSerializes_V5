@@ -27,7 +27,7 @@ namespace NetSerializer.V5.Descriptors {
         /// <param name="obj">L'objecte.</param>
         /// <returns>El valor obtingut.</returns>
         /// 
-        public object GetValue(object obj) =>
+        public object? GetValue(object obj) =>
             _propertyInfo.GetValue(obj);
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace NetSerializer.V5.Descriptors {
         /// <param name="obj">L'objecte.</param>
         /// <param name="value">El valor.</param>
         /// 
-        public void SetValue(object obj, object value) =>
+        public void SetValue(object obj, object? value) =>
             _propertyInfo.SetValue(obj, value);
 
         /// <summary>

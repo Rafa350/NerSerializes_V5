@@ -11,8 +11,8 @@ namespace NetSerializer.V5.TypeSerializers {
     /// 
     public sealed class TypeSerializerProvider: ITypeSerializerProvider {
 
-        private readonly List<ITypeSerializer> _serializerInstances = new List<ITypeSerializer>();
-        private readonly Dictionary<Type, ITypeSerializer> _serializerCache = new Dictionary<Type, ITypeSerializer>();
+        private readonly List<ITypeSerializer> _serializerInstances = [];
+        private readonly Dictionary<Type, ITypeSerializer> _serializerCache = [];
 
         /// <summary>
         /// Constructor de la clase.
@@ -29,7 +29,7 @@ namespace NetSerializer.V5.TypeSerializers {
         /// 
         private void AddSerializers() {
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("System.") && !a.FullName.StartsWith("Microsoft."));
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => (a.FullName != null) && !a.FullName.StartsWith("System.") && !a.FullName.StartsWith("Microsoft."));
             foreach (var assembly in assemblies) {
 
                 var types = assembly.GetTypes();
@@ -38,8 +38,9 @@ namespace NetSerializer.V5.TypeSerializers {
                     // Afegeix si es una clase derivada de 'CustomTypeSerializer'.
                     //
                     if (type.IsClass && !type.IsAbstract && typeof(CustomClassSerializer).IsAssignableFrom(type)) {
-                        var serializer = (ITypeSerializer)Activator.CreateInstance(type);
-                        _serializerInstances.Add(serializer);
+                        var instance = Activator.CreateInstance(type);
+                        if (instance != null) 
+                            _serializerInstances.Add((ITypeSerializer) instance);
                     }
                 }
             }
@@ -48,7 +49,7 @@ namespace NetSerializer.V5.TypeSerializers {
             _serializerInstances.Add(new ArraySerializer());
             _serializerInstances.Add(new StructSerializer());
             _serializerInstances.Add(new ListSerializer());
-            _serializerInstances.Add(new ClassSerializer());  // La ultima de la llista
+            _serializerInstances.Add(new ClassSerializer());  // Cal que sigui l'ultima de la llista
         }
 
         /// <summary>
@@ -56,12 +57,12 @@ namespace NetSerializer.V5.TypeSerializers {
         /// </summary>
         /// <param name="type">El tipus.</param>
         /// <param name="throwOnError">True si llança una excepcio en cas d'error.</param>
-        /// <returns>El serialitzador.</returns>
+        /// <returns>El serialitzador o null si no el troba.</returns>
         /// <exception cref="InvalidOperationException">No s'ha trobat cap serialitzador.</exception>
         /// 
-        public ITypeSerializer GetTypeSerializer(Type type, bool throwOnError = true) {
+        public ITypeSerializer? GetTypeSerializer(Type type, bool throwOnError = true) {
 
-            if (!_serializerCache.TryGetValue(type, out ITypeSerializer serializer)) {
+            if (!_serializerCache.TryGetValue(type, out ITypeSerializer? serializer)) {
 
                 serializer = _serializerInstances.Find(item => item.CanProcess(type));
                 if (serializer != null)

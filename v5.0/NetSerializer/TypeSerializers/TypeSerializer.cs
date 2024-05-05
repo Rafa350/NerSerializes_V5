@@ -14,10 +14,10 @@ namespace NetSerializer.V5.TypeSerializers {
 
         /// <inheritdoc/>
         /// 
-        public abstract void Serialize(SerializationContext context, string name, Type type, object obj);
+        public abstract void Serialize(SerializationContext context, string name, Type type, object? obj);
 
         /// <inheritdoc/>
         /// 
-        public abstract void Deserialize(DeserializationContext context, string name, Type type, out object obj);
+        public abstract void Deserialize(DeserializationContext context, string name, Type type, out object? obj);
     }
 }

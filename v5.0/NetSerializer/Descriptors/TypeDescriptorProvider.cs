@@ -6,7 +6,7 @@ namespace NetSerializer.V5.Descriptors {
     public sealed class TypeDescriptorProvider {
 
         private readonly Dictionary<Type, TypeDescriptor> _cache = [];
-        private static TypeDescriptorProvider _instance;
+        private static TypeDescriptorProvider? _instance;
 
         /// <summary>
         /// Constructor de la clase. Es privat per gestionar la creacio
@@ -27,7 +27,7 @@ namespace NetSerializer.V5.Descriptors {
 
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
-            if (!_cache.TryGetValue(type, out TypeDescriptor typeDescriptor)) {
+            if (!_cache.TryGetValue(type, out TypeDescriptor? typeDescriptor)) {
                 typeDescriptor = new TypeDescriptor(type);
                 _cache.Add(type, typeDescriptor);
             }

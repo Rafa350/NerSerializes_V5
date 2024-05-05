@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using NetSerializer.V5.Descriptors;
 using NetSerializer.V5.Formatters;
 
@@ -32,7 +33,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// derivada de 'CustomClassSerializer'.
         /// </remarks>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object obj) {
+        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(
@@ -68,7 +69,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// un cop es conegui el tipus cal cridar al serialitzador adecuat si en te un propi.
         /// </remarks>
         /// 
-        public override void Deserialize(DeserializationContext context, string name, Type type, out object obj) {
+        public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(
@@ -86,15 +87,16 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                         String.Format("El objecto de tipo '{0}', a deserializar no hereda del tipo '{1}'.", objectType.ToString(), type.ToString()));
 
                 obj = CreateObject(context, objectType);
+                Debug.Assert(obj != null);
+
                 context.Register(obj);
 
                 // Es deserialitza en dos pasos, un amb ClassSerializer i despres amb CustomClassSerializer.
                 // Un cop conegut el tipus del objecte, si te un serialitzador especific, l'utilitza
                 //
-                var serializer = context.GetTypeSerializer(objectType);
-                if (serializer is CustomClassSerializer customSerializer) {
+                var typeSerializer = context.GetTypeSerializer(objectType);
+                if (typeSerializer is CustomClassSerializer customSerializer) 
                     customSerializer.DeserializeObject(context, obj);
-                }
                 else
                     DeserializeObject(context, obj);
 
@@ -115,7 +117,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// <param name="type">El tipus d'objecte.</param>
         /// <returns>El objecte.</returns>
         /// 
-        protected virtual object CreateObject(DeserializationContext context, Type type) {
+        protected virtual object? CreateObject(DeserializationContext context, Type type) {
 
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
             if (typeDescriptor.CanCreate)
@@ -167,8 +169,10 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                 var value = propertyDescriptor.GetValue(obj);
                 var type = value == null ? propertyDescriptor.Type : value.GetType();
 
-                var serializer = context.GetTypeSerializer(type);
-                serializer.Serialize(context, propertyDescriptor.Name, type, value);
+                var typeSerializer = context.GetTypeSerializer(type);
+                Debug.Assert(typeSerializer != null);
+
+                typeSerializer.Serialize(context, propertyDescriptor.Name, type, value);
             }
         }
 
@@ -219,8 +223,11 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         protected virtual void DeserializeProperty(DeserializationContext context, object obj, PropertyDescriptor propertyDescriptor) {
 
             if (propertyDescriptor.CanSetValue) {
-                var serializer = context.GetTypeSerializer(propertyDescriptor.Type);
-                serializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object value);
+
+                var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
+                Debug.Assert(typeSerializer != null);
+                
+                typeSerializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object? value);
                 propertyDescriptor.SetValue(obj, value);
             }
         }

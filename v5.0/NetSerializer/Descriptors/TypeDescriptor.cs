@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NetSerializer.V5.Attributes;
@@ -14,12 +15,12 @@ namespace NetSerializer.V5.Descriptors {
     public sealed class TypeDescriptor {
 
         private readonly Type _type;
-        private readonly TypeConverter _customConverter = null;
-        private readonly TypeConverter _defaultConverter = null;
-        private readonly MethodInfo _createMethodInfo;
-        private readonly MethodInfo _serializeMethodInfo;
-        private readonly MethodInfo _deserializeMethodInfo;
-        private readonly List<PropertyDescriptor> _propertyDescriptors = null;
+        private readonly TypeConverter? _customConverter;
+        private readonly TypeConverter? _defaultConverter;
+        private readonly MethodInfo? _createMethodInfo;
+        private readonly MethodInfo? _serializeMethodInfo;
+        private readonly MethodInfo? _deserializeMethodInfo;
+        private readonly List<PropertyDescriptor>? _propertyDescriptors;
 
         /// <summary>
         /// Contructor del objecte.
@@ -37,8 +38,12 @@ namespace NetSerializer.V5.Descriptors {
             // Obte el conversor de tipus customitzat
             //
             var typeConverterAttribute = type.GetCustomAttribute<TypeConverterAttribute>();
-            if (typeConverterAttribute != null)
-                _customConverter = (TypeConverter)Activator.CreateInstance(Type.GetType(typeConverterAttribute.ConverterTypeName));
+            if (typeConverterAttribute != null) {
+                var converterType = Type.GetType(typeConverterAttribute.ConverterTypeName);
+                Debug.Assert(converterType != null);
+
+                _customConverter = (TypeConverter?)Activator.CreateInstance(converterType);
+            }
 
             // Obte els metodes de creacio, serialitzacio i deserialitzacio
             //
@@ -87,19 +92,19 @@ namespace NetSerializer.V5.Descriptors {
                 _propertyDescriptors.Sort((a, b) => String.Compare(a.Name, b.Name));
         }
 
-        public object Create(DeserializationContext context) {
+        public object? Create(DeserializationContext context) {
 
-            return _createMethodInfo.Invoke(null, new object[] { context });
+            return _createMethodInfo?.Invoke(null, [context]);
         }
 
         public void Serialize(SerializationContext context, object obj) {
 
-            _serializeMethodInfo.Invoke(obj, new object[] { context });
+            _serializeMethodInfo?.Invoke(obj, [context]);
         }
 
         public void Deserialize(DeserializationContext context, object obj) {
 
-            _deserializeMethodInfo.Invoke(obj, new object[] { context });
+            _deserializeMethodInfo?.Invoke(obj, [context]);
         }
 
         /// <summary>
@@ -113,14 +118,14 @@ namespace NetSerializer.V5.Descriptors {
         /// Obte el conversor de tipus customitzat
         /// </summary>
         /// 
-        public TypeConverter CustomConverter =>
+        public TypeConverter? CustomConverter =>
             _customConverter;
 
         /// <summary>
         /// Obte el conversor de tipus predefinit
         /// </summary>
         /// 
-        public TypeConverter DefaultConverter =>
+        public TypeConverter? DefaultConverter =>
             _defaultConverter;
 
         /// <summary>

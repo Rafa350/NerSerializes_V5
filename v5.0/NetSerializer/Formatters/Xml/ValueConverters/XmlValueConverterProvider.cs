@@ -9,7 +9,7 @@ namespace NetSerializer.V5.Formatters.Xml.ValueConverters {
 
     public sealed class XmlValueConverterProvider: IXmlValueConverterProvider {
 
-        private static XmlValueConverterProvider _instance;
+        private static XmlValueConverterProvider? _instance;
         private readonly HashSet<IXmlValueConverter> _converterSet = new HashSet<IXmlValueConverter>();
         private readonly Dictionary<Type, IXmlValueConverter> _converterCache = new Dictionary<Type, IXmlValueConverter>();
 
@@ -23,7 +23,7 @@ namespace NetSerializer.V5.Formatters.Xml.ValueConverters {
 
         /// <inheritdoc/>
         /// 
-        public IXmlValueConverter GetConverter(Type type) {
+        public IXmlValueConverter? GetConverter(Type type) {
 
             if (!_converterCache.TryGetValue(type, out var converter)) {
                 converter = _converterSet.Where(c => c.CanConvert(type)).FirstOrDefault();
@@ -47,8 +47,9 @@ namespace NetSerializer.V5.Formatters.Xml.ValueConverters {
                     if (attr != null) {
                         var converterType = attr.ConverterType;
                         if ((converterType != null) && typeof(IXmlValueConverter).IsAssignableFrom(converterType)) {
-                            var converter = (IXmlValueConverter)Activator.CreateInstance(converterType);
-                            _converterSet.Add(converter);
+                            var converter = Activator.CreateInstance(converterType);
+                            if (converter != null)
+                                _converterSet.Add((IXmlValueConverter) converter);
                         }
                     }
                 }

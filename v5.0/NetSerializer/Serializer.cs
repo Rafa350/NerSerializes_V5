@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using NetSerializer.V5.Formatters;
 using NetSerializer.V5.TypeSerializers;
 
@@ -29,14 +30,14 @@ namespace NetSerializer.V5 {
         /// 
         public void Serialize(FormatWriter writer, object obj, string name = "root", int version = 0) {
 
-            ArgumentNullException.ThrowIfNull(writer, nameof(writer));
-            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
-
             writer.Initialize(version);
             try {
                 var context = new SerializationContext(writer, _typeSerializerProvider);
                 var type = obj.GetType();
+                
                 var typeSerializer = context.GetTypeSerializer(type);
+                Debug.Assert(typeSerializer != null);
+
                 typeSerializer.Serialize(context, name, type, obj);
             }
             finally {
@@ -52,7 +53,7 @@ namespace NetSerializer.V5 {
         /// <returns>El objeto deserializado.</returns>
         /// <exception cref="ArgumentNullException">Algun argumento es nulo.</exception>
         /// 
-        public object Deserialize(FormatReader reader, Type type, string name) {
+        public object? Deserialize(FormatReader reader, Type type, string name) {
 
             ArgumentNullException.ThrowIfNull(reader, nameof(reader));
             ArgumentNullException.ThrowIfNull(type, nameof(type));
@@ -62,7 +63,9 @@ namespace NetSerializer.V5 {
                 var context = new DeserializationContext(reader, _typeSerializerProvider);
 
                 var typeSerializer = context.GetTypeSerializer(type);
-                typeSerializer.Deserialize(context, name, type, out object obj);
+                Debug.Assert(typeSerializer != null);
+
+                typeSerializer.Deserialize(context, name, type, out object? obj);
 
                 return obj;
             }
@@ -78,9 +81,9 @@ namespace NetSerializer.V5 {
         /// <returns>El objeto deserializado.</returns>
         /// <exception cref="ArgumentNullException">Algun argumento es nulo.</exception>
         /// 
-        public T Deserialize<T>(FormatReader reader, string name) {
+        public T? Deserialize<T>(FormatReader reader, string name) {
 
-            return (T)Deserialize(reader, typeof(T), name);
+            return (T?) Deserialize(reader, typeof(T), name);
         }
 
         /// <summary>

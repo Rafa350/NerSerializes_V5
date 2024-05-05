@@ -10,7 +10,7 @@ namespace NetSerializer.V5 {
 
         private readonly ITypeSerializerProvider _typeSerializerProvider;
         private readonly FormatWriter _formatter;
-        private readonly List<object> _register = new List<object>();
+        private List<object>? _register = null;
 
         /// <summary>
         /// Constructor del objecte.
@@ -20,8 +20,8 @@ namespace NetSerializer.V5 {
         /// 
         public SerializationContext(FormatWriter formatter, ITypeSerializerProvider typeSerializerProvider) {
 
-            Debug.Assert(formatter != null);
-            Debug.Assert(typeSerializerProvider != null);
+            ArgumentNullException.ThrowIfNull(formatter, nameof(formatter));
+            ArgumentNullException.ThrowIfNull(typeSerializerProvider, nameof(typeSerializerProvider));
 
             _formatter = formatter;
             _typeSerializerProvider = typeSerializerProvider;
@@ -35,7 +35,10 @@ namespace NetSerializer.V5 {
         /// 
         public int RegisterObject(object obj) {
 
-            Debug.Assert(obj != null);
+            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
+
+            if (_register == null)
+                _register = new List<object>();
 
             _register.Add(obj);
             return _register.Count - 1;
@@ -48,7 +51,7 @@ namespace NetSerializer.V5 {
         /// <returns>El identificador. -1 si no ha estat registrat previament.</returns>
         /// 
         public int GetObjectId(object obj) =>
-            _register.IndexOf(obj);
+            _register == null ? -1 : _register.IndexOf(obj);
 
         /// <summary>
         /// Obte el serialitzador del tipus especificat.
@@ -56,7 +59,7 @@ namespace NetSerializer.V5 {
         /// <param name="type">El tipus.</param>
         /// <returns>El serialitzador.</returns>
         /// 
-        public ITypeSerializer GetTypeSerializer(Type type) =>
+        public ITypeSerializer? GetTypeSerializer(Type type) =>
             _typeSerializerProvider.GetTypeSerializer(type);
 
         /// <summary>
@@ -69,8 +72,6 @@ namespace NetSerializer.V5 {
         /// <exception cref="ArgumentNullException">Error amb els arguments.</exception>
         /// 
         public SerializationContext Write(string name, object value, Type type) {
-
-            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             var typeSerializer = GetTypeSerializer(type);
             Debug.Assert(typeSerializer != null);
@@ -91,6 +92,7 @@ namespace NetSerializer.V5 {
         public SerializationContext Write<T>(string name, T value) {
 
             var type = typeof(T);
+
             var typeSerializer = GetTypeSerializer(type);
             Debug.Assert(typeSerializer != null);
 

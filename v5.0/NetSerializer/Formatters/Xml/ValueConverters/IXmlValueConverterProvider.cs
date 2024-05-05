@@ -10,6 +10,6 @@ namespace NetSerializer.V5.Formatters.Xml.ValueConverters {
         /// <param name="type">El tipus.</param>
         /// <returns>El conversor. Null si no el troba.</returns>
         /// 
-        IXmlValueConverter GetConverter(Type type);
+        IXmlValueConverter? GetConverter(Type type);
     }
 }

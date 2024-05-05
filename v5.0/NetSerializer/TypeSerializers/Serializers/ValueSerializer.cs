@@ -15,7 +15,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object obj) {
+        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(

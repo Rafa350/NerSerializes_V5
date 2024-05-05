@@ -87,7 +87,7 @@ namespace Test.Model {
         /// <param name="other">L'altre objecte a comparar.</param>
         /// <returns>TRrue si son iguals.</returns>
         /// 
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             (obj is LblPoint other) && Equals(other);
 
         public override int GetHashCode() =>

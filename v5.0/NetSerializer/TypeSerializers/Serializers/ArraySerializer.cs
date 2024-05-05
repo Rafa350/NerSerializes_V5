@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using NetSerializer.V5.Formatters;
 
@@ -17,7 +18,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object obj) {
+        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(
@@ -38,11 +39,15 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                 do {
 
                     var value = array.GetValue(index.Current);
-                    var valueType = type.GetElementType();
+                    var elementType = type.GetElementType();
+                    if (elementType == null)
+                        throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
                     var elementName = String.Format("{0}[{1}]", name, index);
 
-                    var serializer = context.GetTypeSerializer(valueType);
-                    serializer.Serialize(context, elementName, valueType, value);
+                    var typeSerializer = context.GetTypeSerializer(elementType);
+                    Debug.Assert(typeSerializer != null);
+
+                    typeSerializer.Serialize(context, elementName, elementType, value);
 
                 } while (index.Next());
 
@@ -52,7 +57,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Deserialize(DeserializationContext context, string name, Type type, out object obj) {
+        public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
 
             if (!CanProcess(type))
                 throw new InvalidOperationException(
@@ -65,15 +70,21 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                 obj = null;
 
             else {
-                var array = Array.CreateInstance(type.GetElementType(), result.Bounds);
+                var elementType = type.GetElementType();
+                if (elementType == null)
+                    throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
+
+                var array = Array.CreateInstance(elementType, result.Bounds);
 
                 var index = new MultidimensionalIndex(array);
                 for (int i = 0; i < result.Count; i++) {
 
                     var elementName = String.Format("{0}[{1}]", name, index);
 
-                    var serializer = context.GetTypeSerializer(type.GetElementType());
-                    serializer.Deserialize(context, elementName, type.GetElementType(), out object elementValue);
+                    var typeSerializer = context.GetTypeSerializer(elementType);
+                    Debug.Assert(typeSerializer != null);
+
+                    typeSerializer.Deserialize(context, elementName, elementType, out object? elementValue);
 
                     array.SetValue(elementValue, index.Current);
 
