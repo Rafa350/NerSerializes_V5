@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace NetSerializer.V5.TypeSerializers.Serializers {
 
@@ -17,9 +18,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// 
         public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
-            if (!CanProcess(type))
-                throw new InvalidOperationException(
-                    String.Format("No es posible serializar el tipo '{0}'.", type.ToString()));
+            Debug.Assert(CanProcess(type));
 
             var writer = context.Writer;
             if (obj == null)
@@ -32,9 +31,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// 
         public override void Deserialize(DeserializationContext context, string name, Type type, out object obj) {
 
-            if (!CanProcess(type))
-                throw new InvalidOperationException(
-                    String.Format("No es posible deserializar el tipo '{0}'.", type.ToString()));
+            Debug.Assert(CanProcess(type));
 
             var reader = context.Reader;
             obj = reader.ReadValue(name, type);

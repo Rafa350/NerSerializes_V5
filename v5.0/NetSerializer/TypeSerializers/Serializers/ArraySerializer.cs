@@ -20,9 +20,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// 
         public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
 
-            if (!CanProcess(type))
-                throw new InvalidOperationException(
-                    String.Format("No es posible serializar el tipo '{0}'.", type.ToString()));
+            Debug.Assert(CanProcess(type));
 
             var writer = context.Writer;
 
@@ -30,8 +28,8 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
                 writer.WriteNull(name);
 
             else {
-                if (obj is not Array array)
-                    throw new InvalidOperationException("'obj' no es 'Array'.");
+                Debug.Assert(obj is Array);
+                var array = (Array)obj;
 
                 writer.WriteArrayHeader(name, array);
 
@@ -59,9 +57,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
         /// 
         public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
 
-            if (!CanProcess(type))
-                throw new InvalidOperationException(
-                    String.Format("No es posible deserializar el tipo '{0}'.", type.ToString()));
+            Debug.Assert(CanProcess(type));
 
             var reader = context.Reader;
 

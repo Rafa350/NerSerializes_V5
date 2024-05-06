@@ -10,7 +10,7 @@ namespace NetSerializer.V5 {
 
         private readonly ITypeSerializerProvider _typeSerializerProvider;
         private readonly FormatWriter _formatter;
-        private List<object>? _register = null;
+        private readonly List<object> _register = [];
 
         /// <summary>
         /// Constructor del objecte.
@@ -19,9 +19,6 @@ namespace NetSerializer.V5 {
         /// <param name="typeSerializerProvider">El proveidor de serialitzadors.</param>
         /// 
         public SerializationContext(FormatWriter formatter, ITypeSerializerProvider typeSerializerProvider) {
-
-            ArgumentNullException.ThrowIfNull(formatter, nameof(formatter));
-            ArgumentNullException.ThrowIfNull(typeSerializerProvider, nameof(typeSerializerProvider));
 
             _formatter = formatter;
             _typeSerializerProvider = typeSerializerProvider;
@@ -35,10 +32,7 @@ namespace NetSerializer.V5 {
         /// 
         public int RegisterObject(object obj) {
 
-            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
-
-            if (_register == null)
-                _register = new List<object>();
+            Debug.Assert(obj != null);  
 
             _register.Add(obj);
             return _register.Count - 1;

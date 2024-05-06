@@ -20,7 +20,7 @@ namespace NetSerializer.V5.TypeSerializers.Serializers {
             Debug.Assert(typeSerializer != null);
 
             for (int i = 0; i < list.Count; i++)
-                typeSerializer.Serialize(context, String.Format("${0}", i), itemType, list[i]);
+                typeSerializer.Serialize(context, $"${i}", itemType, list[i]);
 
             base.SerializeObject(context, obj);
         }
