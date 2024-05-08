@@ -32,9 +32,21 @@ namespace NetSerializer.V6 {
         
         public Serializer Serialize(string name, object obj) {
             
-            _writer.WriteObjecteader(name, obj);
+            if (obj == null)
+                _writer.WriteObjectNull(name);
             
-            _writer.WriteObjectTail();
+            else {                
+                var objID = _objectx.IndexOf(obj);
+                if (objID == -1)
+                    _writer.WriteObjectReference(name, objRef);
+            
+                else {                
+                    _writer.WriteObjecteader(name, obj.GetType());                
+                    _writer.WriteObjectTail();
+                }
+            }
+            
+            return this;
         }
     }
 
