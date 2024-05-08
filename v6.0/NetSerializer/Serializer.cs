@@ -1,31 +1,40 @@
+using NetSerializer.V6.Formaters;
+
 namespace NetSerializer.V6 {
 
     public sealed class Serializer {
         
-        private readonly IFormatWriter _writer;
+        private readonly SerializerContext _context;
         
         public Serializer(IFormatWriter writer) {
-            
-            _writer = writer;
+
+            _context = new SerializerContext(writer);
         }
         
+        public Serializer Serialize(string name, bool value) {
+            
+            _context.Writer.WriteBool(name, value);
+            
+            return this;
+        }
+
         public Serializer Serialize(string name, int value) {
-            
-            _writer.WriteInt(name, value);
-            
+
+            _context.Writer.WriteInt(name, value);
+
             return this;
         }
 
         public Serializer Serialize(string name, float value) {
             
-            _writer.WriteFloat(name, value);
+            _context.Writer.WriteFloat(name, value);
             
             return this;
         }
 
         public Serializer Serialize(string name, double value) {
             
-            _writer.WriteDouble(name, value);
+            _context.Writer.WriteDouble(name, value);
             
             return this;
         }
@@ -33,16 +42,19 @@ namespace NetSerializer.V6 {
         public Serializer Serialize(string name, object obj) {
             
             if (obj == null)
-                _writer.WriteObjectNull(name);
+                _context.Writer.WriteObjectNull(name);
             
             else {                
-                var objID = _objectx.IndexOf(obj);
-                if (objID == -1)
-                    _writer.WriteObjectReference(name, objRef);
+                if (_context.GetObjectId(obj, out int id))
+                    _context.Writer.WriteObjectReference(name, id);
             
                 else {                
-                    _writer.WriteObjecteader(name, obj.GetType());                
-                    _writer.WriteObjectTail();
+                    var type = obj.GetType();
+                    _context.Writer.WriteObjectHeader(name, type, id);                
+
+                    // TODO Serialitzar l'objecte
+
+                    _context.Writer.WriteObjectTail();
                 }
             }
             

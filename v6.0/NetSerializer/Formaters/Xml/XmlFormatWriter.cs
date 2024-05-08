@@ -1,19 +1,17 @@
-using System;
 using System.Globalization;
-using System.IO;
+using System.Text;
 using System.Xml;
-using NetSerializer.V6.Formaters;
+using NetSerializer.V6.Formaters.Xml.Infrastructure;
 
 
 namespace NetSerializer.V6.Formaters.Xml {
-    
+
     public sealed class XmlFormatWriter: FormatWriter {
         
         private const int _serializerVersion = 500;
 
-        private readonly Stream _stream;
         private XmlWriter _writer;
-        private bool _closed = false;
+        private bool _isClosed = false;
         
         private Encoding _encoding = Encoding.UTF8;
         private int _indentation = 4;
@@ -22,23 +20,19 @@ namespace NetSerializer.V6.Formaters.Xml {
         private bool _compactMode = false;
         private bool _encodedStrings = true;
 
-        
-        public XmlFormatWriter(Stream stream, XmlFormatWriterSettings settings = null {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="stream">El stream de escriptura.</param>
+        /// <param name="version">La versio del contingut.</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// 
+        public XmlFormatWriter(Stream stream, int version) {
+
+            ArgumentOutOfRangeException.ThrowIfNegative(version, nameof(version));
             
             if (!stream.CanWrite)
                 throw new InvalidOperationException("El stream especificado no es de escritura.");
-
-            _stream = stream;
-        }
-                
-        /// <summary>
-        /// Inicialitza l'operacio d'escriptura.
-        /// </summary>
-        /// <param name="version">Numero de versio de les dades.</param>
-        /// 
-        public override void Initialize(int version) {
-
-            ArgumentOutOfRangeException.ThrowIfNegative(version, nameof(version));
 
             var writerSettings = new XmlWriterSettings {
                 Encoding = _encoding,
@@ -47,91 +41,136 @@ namespace NetSerializer.V6.Formaters.Xml {
                 CheckCharacters = true,
                 CloseOutput = false
             };
-            _writer = XmlWriter.Create(_stream, writerSettings);
-
+            _writer = XmlWriter.Create(stream, writerSettings);
             _writer.WriteStartDocument();
             _writer.WriteStartElement("document");
-            _writer.WriteAttribute("version", _serializerVersion);
-            _writer.WriteAttribute("encodeStrings", _encodedStrings);
-            _writer.WriteAttribute("useNames", _useNames);
-            _writer.WriteAttribute("compactMode", _compactMode);
-            _writer.WriteAttribute("useMeta", _useMeta);
+            _writer.WriteAttributeInt("version", _serializerVersion);
+            _writer.WriteAttributeBool("encodeStrings", _encodedStrings);
+            _writer.WriteAttributeBool("useNames", _useNames);
+            _writer.WriteAttributeBool("compactMode", _compactMode);
+            _writer.WriteAttributeBool("useMeta", _useMeta);
             _writer.WriteStartElement("data");
-            _writer.WriteAttribute("version", version);
+            _writer.WriteAttributeInt("version", version);
         }
 
-        /// <summary>
-        /// Finalitza l'operacio d'escriptura.
-        /// </summary>
+        /// <inheritdoc/>
+        /// 
+        public override void Dispose() {
+
+            Close();
+        }
+
+        /// <inheritdoc/>
         /// 
         public override void Close() {
 
-            if (!_closed) {
+            if (!_isClosed) {
+                _isClosed = true;
+
                 _writer.WriteEndElement();
                 _writer.WriteEndElement();
                 _writer.WriteEndDocument();
                 _writer.Close();
-                _closed = true;
             }
         }
-        
-        public override void WriteInt(string name, int value) {
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteBool(string name, bool value) {
             
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
             _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_settings.UseNames)
-                _writer.WriteAttribute("name", name);
-
-            _writer.WriteValue(value.ToString());
-
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value);
             _writer.WriteEndElement();
-
         }
-        
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteInt(string name, int value) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "v" : "value");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value);
+            _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
         public override void WriteFloat(string name, float value) {
             
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
             _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_settings.UseNames)
-                _writer.WriteAttribute("name", name);
-
-            _writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
-
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value);
             _writer.WriteEndElement();
         }
-     
+
+        /// <inheritdoc/>
+        /// 
         public override void WriteDouble(string name, double value) {
             
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
             _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_settings.UseNames)
-                _writer.WriteAttribute("name", name);
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value);
+            _writer.WriteEndElement();
+        }
 
-            _writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
+        /// <inheritdoc/>
+        /// 
+        public override void WriteObjectNull(string name) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteObjectReference(string name, int id) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "r" : "reference");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteAttributeInt("id", id);
 
             _writer.WriteEndElement();
         }
-       
+
+        /// <inheritdoc/>
+        /// 
         public override void WriteObjectHeader(string name, Type type, int id) {
             
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
             _writer.WriteStartElement(_compactMode ? "o" : "object");
-            if (_settings.UseNames)
-                _writer.WriteAttribute("name", name);
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
 
-            _writer.WriteAttribute("type", Type.ToString());
-
+            _writer.WriteAttributeString("type", type.ToString());
+            _writer.WriteAttributeInt("id", id);
         }
-        
-        public override void WriteObjectTail(string name) {
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteObjectTail() {
             
             _writer.WriteEndElement();
         }
