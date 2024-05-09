@@ -1,5 +1,5 @@
 obj
 bin
 *.suo
-/.vs
+.vs
 doc
