@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using NetSerializer.V5.Formatters;
+using NetSerializer.V6.Formatters;
 
-namespace NetSerializer.V5.TypeSerializers.Serializers {
+namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     /// <summary>
     /// Serialitzador d'arrays.

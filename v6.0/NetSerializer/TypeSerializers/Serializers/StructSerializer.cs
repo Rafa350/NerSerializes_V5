@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using NetSerializer.V5.Descriptors;
 
-namespace NetSerializer.V5.TypeSerializers.Serializers {
+namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     public class StructSerializer: TypeSerializer {
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace NetSerializer.V6.Formaters {
+namespace NetSerializer.V6 {
     
     public interface ISerializationWriter {
 

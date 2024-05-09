@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace NetSerializer.V5.TypeSerializers.Serializers {
+namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     public sealed class ListSerializer: ClassSerializer {
 

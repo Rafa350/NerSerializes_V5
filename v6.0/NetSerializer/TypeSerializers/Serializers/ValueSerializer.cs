@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace NetSerializer.V5.TypeSerializers.Serializers {
+namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     /// <summary>
     /// Serializa i deserializa tipos primitivos, enumeradores, DateTime y TimeStamp.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NetSerializer.V5.TypeSerializers.Serializers;
+using NetSerializer.V6.TypeSerializers.Serializers;
 
 namespace NetSerializer.V6.TypeSerializers {
 

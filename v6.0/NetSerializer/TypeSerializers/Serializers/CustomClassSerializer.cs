@@ -1,4 +1,4 @@
-﻿namespace NetSerializer.V5.TypeSerializers.Serializers {
+﻿namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     public abstract class CustomClassSerializer: ClassSerializer {
     }

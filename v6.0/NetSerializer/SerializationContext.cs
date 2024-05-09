@@ -1,42 +1,42 @@
 ﻿using NetSerializer.V6.Formaters;
 using NetSerializer.V6.TypeSerializers;
 
-namespace NetSerializer {
+namespace NetSerializer.V6 {
 
-    internal class SerializationContext: ISerializationWriter {
+    public sealed class SerializationContext: ISerializationWriter {
 
         private readonly FormatWriter _writer;
         private readonly List<object> _items = [];
 
-        public SerializerContext(FormatWriter writer) {
+        public SerializationContext(FormatWriter writer) {
 
             _writer = writer;
         }
 
         /// <inherited/>
         ///
-        void WriteBool(string name, bool value) {
+        public void WriteBool(string name, bool value) {
          
             _writer.WriteBool(name, value);
         }
 
         /// <inherited/>
         ///
-        void WriteInt(string name, int value) {
+        public void WriteInt(string name, int value) {
             
             _writer.WriteInt(name, value);
         }
 
         /// <inherited/>
         ///
-        void WriteFloat(string name, float value) {
+        public void WriteFloat(string name, float value) {
             
             _writer.WriteFloat(name, value);
         }
 
         /// <inherited/>
         ///
-        void WriteDouble(string name, double value) {
+        public void WriteDouble(string name, double value) {
             
             _writer.WriteDouble(name, value);
         }

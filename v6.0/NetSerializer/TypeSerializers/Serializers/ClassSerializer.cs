@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using NetSerializer.V5.Descriptors;
-using NetSerializer.V5.Formatters;
+using NetSerializer.V6;
+using NetSerializer.V6.Descriptors;
+using NetSerializer.V6.Formatters;
 
-namespace NetSerializer.V5.TypeSerializers.Serializers {
+namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     /// <summary>
     /// Serializador de clases.

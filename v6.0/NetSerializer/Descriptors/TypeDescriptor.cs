@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using NetSerializer.V5.Attributes;
+using NetSerializer.V6.Attributes;
 
 namespace NetSerializer.V6.Descriptors {
 

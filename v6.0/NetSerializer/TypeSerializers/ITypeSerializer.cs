@@ -1,4 +1,5 @@
 ﻿using System;
+using NetSerializer.V6;
 
 namespace NetSerializer.V6.TypeSerializers {
 
