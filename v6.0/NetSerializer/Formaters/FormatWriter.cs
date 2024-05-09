@@ -1,6 +1,6 @@
 namespace NetSerializer.V6.Formaters {
 
-    public abstract class FormatWriter: IFormatWriter, IDisposable {
+    public abstract class FormatWriter: IDisposable {
 
         /// <summary>
         /// Finalitza l'operacio d'escriptura.

@@ -2,7 +2,7 @@ using System;
 
 namespace NetSerializer.V6.Formaters {
     
-    public interface IFormatWriter {
+    public interface ISerializationWriter {
 
         /// <summary>
         /// Escriu un valor boolean.
@@ -40,12 +40,13 @@ namespace NetSerializer.V6.Formaters {
         /// 
         void WriteDouble(string name, double value);
 
-        void WriteObjectNull(string name);
-
-        void WriteObjectReference(string name, int id);
-
-        void WriteObjectHeader(string name, Type type, int id);
-        
-        void WriteObjectTail();
+        /// <summary>
+        /// Escriu un objecte.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteObject(string name, object obj);
     }
 }
