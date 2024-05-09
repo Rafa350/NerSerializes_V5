@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NetSerializer.V5.Descriptors {
+namespace NetSerializer.V6.Descriptors {
 
     public sealed class TypeDescriptorProvider {
 

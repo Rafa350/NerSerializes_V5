@@ -1,8 +1,9 @@
 ﻿using NetSerializer.V6.Formaters;
+using NetSerializer.V6.TypeSerializers;
 
 namespace NetSerializer {
 
-    internal class SerializerContext: ISerializationWriter {
+    internal class SerializationContext: ISerializationWriter {
 
         private readonly FormatWriter _writer;
         private readonly List<object> _items = [];
@@ -80,7 +81,7 @@ namespace NetSerializer {
         
         private TypeSerializer GetTypeSerializer(object obj) {
             
-            var typeSerializerProvicer = TypeSerializerProvicer.Instance;  
+            var typeSerializerProvider = TypeSerializerProvider.Instance;  
             var type = obj.GetType();
             return typeSerializerProvider.GetTypeSerializer(type);
         }

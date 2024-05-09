@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetSerializer.V5.TypeSerializers {
+namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Interficie que cal que implementin tots els serialitzadors de tipus.

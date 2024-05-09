@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetSerializer.V5.TypeSerializers {
+namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Extensions de la clase 'Type'.

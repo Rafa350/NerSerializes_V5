@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NetSerializer.V5.TypeSerializers.Serializers;
 
-namespace NetSerializer.V5.TypeSerializers {
+namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Gestiona els serialitzadors.

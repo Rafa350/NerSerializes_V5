@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetSerializer.V5.TypeSerializers {
+namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Clase abstracta de la que deriven tots els serializadors de tipus.

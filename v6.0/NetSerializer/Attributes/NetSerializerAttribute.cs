@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetSerializer.V5.Attributes {
+namespace NetSerializer.V6.Attributes {
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class NetSerializerAttribute: Attribute {

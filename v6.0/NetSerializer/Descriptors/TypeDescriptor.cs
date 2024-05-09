@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using NetSerializer.V5.Attributes;
 
-namespace NetSerializer.V5.Descriptors {
+namespace NetSerializer.V6.Descriptors {
 
     /// <summary>
     /// Descriptor d'un tipus.

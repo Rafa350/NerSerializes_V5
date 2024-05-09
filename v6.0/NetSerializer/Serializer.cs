@@ -4,14 +4,14 @@ namespace NetSerializer.V6 {
 
     public sealed class Serializer {
         
-        private readonly SerializerContext _context;
+        private readonly SerializationContext _context;
         
         public Serializer(FormatWriter writer) {
 
-            _context = new SerializerContext(writer);
+            _context = new SerializationContext(writer);
         }
         
-        public Serialize(string name, object obj) {
+        public void Serialize(string name, object obj) {
             
             _context.WriteObject(name, obj);
         }
