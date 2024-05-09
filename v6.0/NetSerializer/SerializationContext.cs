@@ -29,9 +29,9 @@ namespace NetSerializer.V6 {
 
         /// <inherited/>
         ///
-        public void WriteFloat(string name, float value) {
+        public void WriteSingle(string name, float value) {
             
-            _writer.WriteFloat(name, value);
+            _writer.WriteSingle(name, value);
         }
 
         /// <inherited/>
@@ -41,11 +41,21 @@ namespace NetSerializer.V6 {
             _writer.WriteDouble(name, value);
         }
 
+        public void WriteString(string name, string? value) {
+
+            _writer.WriteString(name, value);
+        }
+
         /// <inherited/>
         ///
-        public void WriteObject(string name, object obj) {
-            
-            _writer.WriteObject(name, obj);
+        public void WriteNull(string name) {
+
+            _writer.WriteNull(name);
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteObject(string name, object? obj) {
             
             if (obj == null)
                 _writer.WriteObjectNull(name);
@@ -59,13 +69,20 @@ namespace NetSerializer.V6 {
                     _writer.WriteObjectHeader(name, type, id);                
 
                     var typeSerializer = GetTypeSerializer(type);
-                    typeSerializer.Serialize(obj);
+                    typeSerializer?.Serialize(this, obj);
 
                     _writer.WriteObjectTail();
                 }
             }
         }
 
+        /// <summary>
+        /// Obte el identificador del objecte.
+        /// </summary>
+        /// <param name="obj">El objecte.</param>
+        /// <param name="id">El identificador obtingut.</param>
+        /// <returns>True si el identificador es reutilitzat, false en cas contrari.</returns>
+        /// 
         private bool GetObjectId(object obj, out int id) {
 
             id = _items.IndexOf(obj);
@@ -79,7 +96,13 @@ namespace NetSerializer.V6 {
             }
         }        
         
-        private TypeSerializer GetTypeSerializer(object obj) {
+        /// <summary>
+        /// Obte el serialitzador pel objecte especificat.
+        /// </summary>
+        /// <param name="obj">L'objecte.</param>
+        /// <returns>El seu serialitzador.</returns>
+        /// 
+        private static ITypeSerializer? GetTypeSerializer(object obj) {
             
             var typeSerializerProvider = TypeSerializerProvider.Instance;  
             var type = obj.GetType();

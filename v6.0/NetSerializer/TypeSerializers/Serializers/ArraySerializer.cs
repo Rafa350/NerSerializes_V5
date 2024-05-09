@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using NetSerializer.V6.Formatters;
-
+using NetSerializer.V6.Formaters;
+/*
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     /// <summary>
@@ -22,7 +22,6 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
             Debug.Assert(CanProcess(type));
 
-            var writer = context.Writer;
 
             if (obj == null)
                 writer.WriteNull(name);
@@ -150,3 +149,4 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         }
     }
 }
+*/

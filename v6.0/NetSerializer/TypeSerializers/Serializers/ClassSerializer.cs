@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using NetSerializer.V6;
-using NetSerializer.V6.Descriptors;
-using NetSerializer.V6.Formatters;
+﻿using NetSerializer.V6.TypeDescriptors;
 
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
@@ -29,37 +25,10 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         }
 
         /// <inheritdoc/>
-        /// <remarks>
-        /// Aqui el tipus del objecte 'obj' ja es conegut i per tant es posible que 'this' sigui una clase
-        /// derivada de 'CustomClassSerializer'.
-        /// </remarks>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
+        public override void Serialize(SerializationContext context, object obj) {
 
-            Debug.Assert(CanProcess(type));
-
-            var writer = context.Writer;
-
-            if (obj == null)
-                writer.WriteNull(name);
-
-            else {
-                if (!type.IsAssignableFrom(obj.GetType()))
-                    throw new InvalidOperationException(
-                        String.Format("El objeto a serializar no hereda del tipo '{0}'.", type.ToString()));
-
-                int id = context.GetObjectId(obj);
-                if (id == -1) {
-                    id = context.RegisterObject(obj);
-                    writer.WriteObjectHeader(name, obj, id);
-
-                    SerializeObject(context, obj);
-
-                    writer.WriteObjectTail();
-                }
-                else
-                    writer.WriteObjectReference(name, id);
-            }
+            SerializeObject(context, obj);
         }
 
         /// <inheritdoc/>
@@ -69,7 +38,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// </remarks>
         /// 
         public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
-
+/*
             Debug.Assert(CanProcess(type));
 
             var reader = context.Reader;
@@ -103,7 +72,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
             else if (result.ResultType == ReadObjectResultType.Reference)
                 obj = context.GetObject(result.ObjectId);
 
-            else
+            else*/
                 obj = null;
         }
 
@@ -114,14 +83,14 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// <param name="type">El tipus d'objecte.</param>
         /// <returns>El objecte.</returns>
         /// 
-        protected virtual object? CreateObject(DeserializationContext context, Type type) {
+/*        protected virtual object? CreateObject(DeserializationContext context, Type type) {
 
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
             if (typeDescriptor.CanCreate)
                 return typeDescriptor.Create(context);
             else
                 return Activator.CreateInstance(type);
-        }
+        }*/
 
         /// <summary>
         /// Serialitzacio per defecte del objecte.
@@ -131,8 +100,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// 
         protected virtual void SerializeObject(SerializationContext context, object obj) {
 
-            var type = obj.GetType();
-            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
+            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(obj.GetType());
 
             // Si pot, es serialitza ell mateix.
             //
@@ -160,16 +128,33 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
             if (propertyDescriptor.CanGetValue) {
 
-                // Obte el tipus de la propietat del valor, que pot ser una clase derivada. Si es null,
-                // obte el tipus base de la propietat.
-                //
+                var name = propertyDescriptor.Name;
                 var value = propertyDescriptor.GetValue(obj);
-                var type = value == null ? propertyDescriptor.Type : value.GetType();
 
-                var typeSerializer = context.GetTypeSerializer(type);
-                Debug.Assert(typeSerializer != null);
+                if (value == null)
+                    context.WriteObject(name, null);
 
-                typeSerializer.Serialize(context, propertyDescriptor.Name, type, value);
+                else {
+                    var type = value.GetType();
+
+                    if (type == typeof(bool))
+                        context.WriteBool(name, (bool)value);
+
+                    else if (type == typeof(int))
+                        context.WriteInt(name, (int)value);
+
+                    else if (type == typeof(float))
+                        context.WriteSingle(name, (float)value);
+
+                    else if (type == typeof(double))
+                        context.WriteDouble(name, (double)value);
+
+                    else if (type == typeof(string))
+                        context.WriteString(name, (string)value);
+
+                    else
+                        context.WriteObject(name, value);
+                }
             }
         }
 
@@ -221,11 +206,11 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
             if (propertyDescriptor.CanSetValue) {
 
-                var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
+                /*var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
                 Debug.Assert(typeSerializer != null);
                 
                 typeSerializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object? value);
-                propertyDescriptor.SetValue(obj, value);
+                propertyDescriptor.SetValue(obj, value);*/
             }
         }
 

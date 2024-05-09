@@ -29,7 +29,7 @@ namespace NetSerializer.V6 {
         /// <param name="value">El valor.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// 
-        void WriteFloat(string name, float value);
+        void WriteSingle(string name, float value);
 
         /// <summary>
         /// Escriu un valor double.
@@ -41,12 +41,29 @@ namespace NetSerializer.V6 {
         void WriteDouble(string name, double value);
 
         /// <summary>
+        /// Escriu un valor string.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteString(string name, string? value);
+
+        /// <summary>
+        /// Escriu un valor nul.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteNull(string name);
+
+        /// <summary>
         /// Escriu un objecte.
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// 
-        void WriteObject(string name, object obj);
+        void WriteObject(string name, object? obj);
     }
 }

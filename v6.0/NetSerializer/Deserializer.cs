@@ -1,5 +1,5 @@
 using NetSerializer.V6.Formaters;
-
+/*
 namespace NetSerializer.V6 {
 
     public sealed class Deserializer {
@@ -19,3 +19,4 @@ namespace NetSerializer.V6 {
     
     }
 }
+*/

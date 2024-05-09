@@ -8,36 +8,54 @@ namespace NetSerializer.V6.Formaters {
         /// 
         public abstract void Close();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu un valor bool
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
         /// 
         public abstract void WriteBool(string name, bool value);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu un valor int
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
         /// 
         public abstract void WriteInt(string name, int value);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu un valor float
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
         /// 
-        public abstract void WriteFloat(string name, float value);
+        public abstract void WriteSingle(string name, float value);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu un valor double
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
         /// 
         public abstract void WriteDouble(string name, double value);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu un valor string
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
         /// 
+        public abstract void WriteString(string name, string? value);
+
+        public abstract void WriteNull(string name);
+
         public abstract void WriteObjectNull(string name);
 
-        /// <inheritdoc/>
-        /// 
         public abstract void WriteObjectReference(string name, int id);
 
-        /// <inheritdoc/>
-        /// 
         public abstract void WriteObjectHeader(string name, Type type, int id);
 
-        /// <inheritdoc/>
-        /// 
         public abstract void WriteObjectTail();
 
         /// <summary>

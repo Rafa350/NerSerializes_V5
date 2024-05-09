@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text;
 using System.Xml;
 using NetSerializer.V6.Formaters.Xml.Infrastructure;
@@ -104,7 +103,7 @@ namespace NetSerializer.V6.Formaters.Xml {
 
         /// <inheritdoc/>
         /// 
-        public override void WriteFloat(string name, float value) {
+        public override void WriteSingle(string name, float value) {
             
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -132,10 +131,41 @@ namespace NetSerializer.V6.Formaters.Xml {
 
         /// <inheritdoc/>
         /// 
-        public override void WriteObjectNull(string name) {
+        public override void WriteString(string name, string? value) {
+
+            if (String.IsNullOrEmpty(value))
+                WriteNull(name);
+
+            else {
+                if (_useNames && String.IsNullOrEmpty(name))
+                    throw new ArgumentNullException(nameof(name));
+
+                _writer.WriteStartElement(_compactMode ? "v" : "value");
+                if (_useNames)
+                    _writer.WriteAttributeString("name", name);
+                _writer.WriteValue(value);
+                _writer.WriteEndElement();
+            }
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteNull(string name) {
 
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "n" : "null");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteObjectNull(string name) {
+
+            WriteNull(name);
         }
 
         /// <inheritdoc/>

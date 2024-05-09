@@ -1,8 +1,7 @@
 using NetSerializer.V6.Formaters;
-using NetSerializer.V6.TypeSerializers;
 
-namespace NewSerializer.V6 {
-    
+namespace NetSerializer.V6 {
+
     public sealed class DeserializationContext: IDeserializationReader {
         
         private readonly FormatReader _reader;
@@ -29,22 +28,22 @@ namespace NewSerializer.V6 {
         
         /// <inherited/>
         ///
-        public float ReadFloat(string name) {
+        public float ReadSingle(string name) {
             
-            return _reader.ReadFloat(name);
+            return _reader.ReadSingle(name);
         }
         
         /// <inherited/>
         ///
         public double ReadDouble(string name) {
             
-            return _reader.ReadDouble(double);
+            return _reader.ReadDouble(name);
         }
         
         /// <inherited/>
         ///
-        public object ReadObject(string name) {
-            
+        public object? ReadObject(string name) {
+
             return null;
         }
         
@@ -54,4 +53,3 @@ namespace NewSerializer.V6 {
         }
     }
 }
-

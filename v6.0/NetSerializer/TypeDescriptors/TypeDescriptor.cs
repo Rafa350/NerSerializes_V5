@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using NetSerializer.V6.Attributes;
 
-namespace NetSerializer.V6.Descriptors {
+namespace NetSerializer.V6.TypeDescriptors {
 
     /// <summary>
     /// Descriptor d'un tipus.
@@ -48,13 +45,13 @@ namespace NetSerializer.V6.Descriptors {
             // Obte els metodes de creacio, serialitzacio i deserialitzacio
             //
             string createMethodName = "Create";
-            _createMethodInfo = type.GetMethod(createMethodName, BindingFlags.Static | BindingFlags.Public, new Type[] { typeof(DeserializationContext) });
+            _createMethodInfo = type.GetMethod(createMethodName, BindingFlags.Static | BindingFlags.Public, [typeof(DeserializationContext)]);
 
             string serializeMethodName = "Serialize";
-            _serializeMethodInfo = type.GetMethod(serializeMethodName, BindingFlags.Instance | BindingFlags.Public, new Type[] { typeof(SerializationContext) });
+            _serializeMethodInfo = type.GetMethod(serializeMethodName, BindingFlags.Instance | BindingFlags.Public, [typeof(SerializationContext)]);
 
             string deserializeMethodName = "Deserialize";
-            _deserializeMethodInfo = type.GetMethod(deserializeMethodName, BindingFlags.Instance | BindingFlags.Public, new Type[] { typeof(DeserializationContext) });
+            _deserializeMethodInfo = type.GetMethod(deserializeMethodName, BindingFlags.Instance | BindingFlags.Public, [typeof(DeserializationContext)]);
 
             // Obte les propietats, i si son serialitzables, les afegeix a la llista.
             //
@@ -164,4 +161,3 @@ namespace NetSerializer.V6.Descriptors {
             _deserializeMethodInfo != null;
     }
 }
-

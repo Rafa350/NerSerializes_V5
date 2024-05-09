@@ -1,4 +1,4 @@
-namespace NewSerializer.V6 {
+namespace NetSerializer.V6 {
 
     public interface IDeserializationReader {
         
@@ -6,11 +6,11 @@ namespace NewSerializer.V6 {
         
         int ReadInt(string name);
         
-        float ReadFloat(string name);
+        float ReadSingle(string name);
         
         double ReadDouble(string name);
         
-        object ReadObject(string name);
+        object? ReadObject(string name);
     }
 
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NetSerializer.V6.TypeSerializers.Serializers;
+﻿using NetSerializer.V6.TypeSerializers.Serializers;
 
 namespace NetSerializer.V6.TypeSerializers {
 
@@ -9,16 +6,17 @@ namespace NetSerializer.V6.TypeSerializers {
     /// Gestiona els serialitzadors.
     /// </summary>
     /// 
-    public sealed class TypeSerializerProvider: ITypeSerializerProvider {
+    public sealed class TypeSerializerProvider {
 
+        private static TypeSerializerProvider? _instance;
         private readonly List<ITypeSerializer> _serializerInstances = [];
         private readonly Dictionary<Type, ITypeSerializer> _serializerCache = [];
 
         /// <summary>
-        /// Constructor de la clase.
+        /// Constructor de la clase. Es privat per implementar una clase singleton.
         /// </summary>
         /// 
-        public TypeSerializerProvider() {
+        private TypeSerializerProvider() {
 
             AddSerializers();
         }
@@ -45,10 +43,9 @@ namespace NetSerializer.V6.TypeSerializers {
                 }
             }
 
-            _serializerInstances.Add(new ValueSerializer());
-            _serializerInstances.Add(new ArraySerializer());
-            _serializerInstances.Add(new StructSerializer());
-            _serializerInstances.Add(new ListSerializer());
+            //_serializerInstances.Add(new ArraySerializer());
+            //_serializerInstances.Add(new StructSerializer());
+            //_serializerInstances.Add(new ListSerializer());
             _serializerInstances.Add(new ClassSerializer());  // Cal que sigui l'ultima de la llista
         }
 
@@ -73,6 +70,17 @@ namespace NetSerializer.V6.TypeSerializers {
             }
 
             return serializer;
+        }
+
+        /// <summary>
+        /// Obte una instancia unica a la clase.
+        /// </summary>
+        /// 
+        public static TypeSerializerProvider Instance {
+            get {
+                _instance ??= new TypeSerializerProvider();
+                return _instance;
+            }
         }
     }
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NetSerializer.V6.Descriptors {
+﻿namespace NetSerializer.V6.TypeDescriptors {
 
     public sealed class TypeDescriptorProvider {
 
-        private readonly Dictionary<Type, TypeDescriptor> _cache = [];
         private static TypeDescriptorProvider? _instance;
+        private readonly Dictionary<Type, TypeDescriptor> _cache = [];
 
         /// <summary>
         /// Constructor de la clase. Es privat per gestionar la creacio
@@ -47,4 +44,3 @@ namespace NetSerializer.V6.Descriptors {
         }
     }
 }
-

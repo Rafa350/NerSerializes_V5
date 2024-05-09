@@ -1,7 +1,4 @@
-﻿using System;
-using NetSerializer.V6;
-
-namespace NetSerializer.V6.TypeSerializers {
+﻿namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Interficie que cal que implementin tots els serialitzadors de tipus.
@@ -20,11 +17,9 @@ namespace NetSerializer.V6.TypeSerializers {
         /// Serializa un objete.
         /// </summary>
         /// <param name="context">El context de serialitzacio.</param>
-        /// <param name="name">El nom.</param>
-        /// <param name="type">El tipus del objecte a serioalitzar.</param>
-        /// <param name="obj">L'objecte a serailitzar.</param>
+        /// <param name="obj">L'objecte a serilitzar.</param>
         /// 
-        void Serialize(SerializationContext context, string name, Type type, object? obj);
+        void Serialize(SerializationContext context, object obj);
 
         /// <summary>
         /// Deserializa un objete.
@@ -32,7 +27,7 @@ namespace NetSerializer.V6.TypeSerializers {
         /// <param name="context">El context de deserialitzacio.</param>
         /// <param name="name">El nom.</param>
         /// <param name="type">Tipus del objecte a deserialitzar.</param>
-        /// <returns>L'objecte deserialitzat.</returns>
+        /// <param name="obj">Lobjecte a deserialitzar.</param>
         /// 
         void Deserialize(DeserializationContext context, string name, Type type, out object? obj);
     }

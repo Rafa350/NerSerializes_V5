@@ -1,7 +1,6 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace NetSerializer.V6.Descriptors {
+namespace NetSerializer.V6.TypeDescriptors {
 
     /// <summary>
     /// Descriptor d'una propietat

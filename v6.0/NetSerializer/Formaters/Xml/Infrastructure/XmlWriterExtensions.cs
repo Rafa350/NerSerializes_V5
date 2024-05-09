@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Xml;
+﻿using System.Xml;
 
 namespace NetSerializer.V6.Formaters.Xml.Infrastructure {
 
@@ -7,42 +6,44 @@ namespace NetSerializer.V6.Formaters.Xml.Infrastructure {
 
         public static void WriteAttributeBool(this XmlWriter writer, string localName, bool value) {
 
-            writer.WriteAttributeString(localName, value.ToString());
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
 
         public static void WriteAttributeInt(this XmlWriter writer, string localName, int value) {
 
-            writer.WriteAttributeString(localName, value.ToString());
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
 
         public static void WriteAttributeFloat(this XmlWriter writer, string localName, float value) {
 
-            writer.WriteAttributeString(localName, value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
 
         public static void WriteAttributeDouble(this XmlWriter writer, string localName, double value) {
 
-            writer.WriteAttributeString(localName, value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
 
-        public static void WriteValue(this XmlWriter writer, bool value) {
+        public static void WriteAttributeDouble(this XmlWriter writer, string localName, Decimal value) {
 
-            writer.WriteValue(value.ToString());
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
 
-        public static void WriteValue(this XmlWriter writer, int value) {
+        public static void WriteAttributeDouble(this XmlWriter writer, string localName, DateTime value) {
 
-            writer.WriteValue(value.ToString());
-        }
-
-        public static void WriteValue(this XmlWriter writer, float value) {
-
-            writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public static void WriteValue(this XmlWriter writer, double value) {
-
-            writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteStartAttribute(localName);
+            writer.WriteValue(value);
+            writer.WriteEndAttribute();
         }
     }
 }

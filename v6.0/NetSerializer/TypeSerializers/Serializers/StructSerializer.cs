@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using NetSerializer.V5.Descriptors;
-
+using NetSerializer.V6.TypeDescriptors;
+/*
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     public class StructSerializer: TypeSerializer {
@@ -121,3 +121,4 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         }
     }
 }
+*/
