@@ -1,4 +1,4 @@
-using NetSerializer.V6.Formaters;
+using NetSerializer.V6.Formatters;
 
 namespace NetSerializer.V6 {
 

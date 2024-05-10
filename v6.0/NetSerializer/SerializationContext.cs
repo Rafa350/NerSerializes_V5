@@ -1,4 +1,4 @@
-﻿using NetSerializer.V6.Formaters;
+﻿using NetSerializer.V6.Formatters;
 using NetSerializer.V6.TypeSerializers;
 
 namespace NetSerializer.V6 {
@@ -41,9 +41,25 @@ namespace NetSerializer.V6 {
             _writer.WriteDouble(name, value);
         }
 
+        /// <inherited/>
+        ///
+        public void WriteDecimal(string name, decimal value) {
+
+            _writer.WriteDecimal(name, value);
+        }
+
+        /// <inherited/>
+        ///
         public void WriteString(string name, string? value) {
 
             _writer.WriteString(name, value);
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteEnum(string name, Enum value) {
+
+            _writer.WriteEnum(name, value);
         }
 
         /// <inherited/>

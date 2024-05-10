@@ -149,8 +149,15 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                     else if (type == typeof(double))
                         context.WriteDouble(name, (double)value);
 
+                    else if (type == typeof(decimal))
+                        context.WriteDecimal(name, (decimal)value);
+
                     else if (type == typeof(string))
                         context.WriteString(name, (string)value);
+
+                    else if (type.IsEnum) {
+                        context.WriteEnum(name, (Enum)value);
+                    }
 
                     else
                         context.WriteObject(name, value);

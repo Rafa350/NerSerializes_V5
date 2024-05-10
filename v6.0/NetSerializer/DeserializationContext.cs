@@ -1,4 +1,4 @@
-using NetSerializer.V6.Formaters;
+using NetSerializer.V6.Formatters;
 
 namespace NetSerializer.V6 {
 
@@ -39,7 +39,28 @@ namespace NetSerializer.V6 {
             
             return _reader.ReadDouble(name);
         }
-        
+
+        /// <inherited/>
+        ///
+        public decimal ReadDecimal(string name) {
+
+            return _reader.ReadDecimal(name);
+        }
+
+        /// <inherited/>
+        ///
+        public T ReadEnum<T>(string name) where T : struct { 
+
+            return _reader.ReadEnum<T>(name);
+        }
+
+        /// <inherited/>
+        ///
+        public string? ReadString(string name) {
+
+            return _reader.ReadString(name);
+        }
+
         /// <inherited/>
         ///
         public object? ReadObject(string name) {

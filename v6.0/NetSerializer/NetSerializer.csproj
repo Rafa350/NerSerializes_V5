@@ -8,4 +8,12 @@
     <BaseOutputPath>..\bin\</BaseOutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Formatters\Xml\Schemas\DataSchema.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Formatters\Xml\Schemas\DataSchema.xsd" />
+  </ItemGroup>
+
 </Project>

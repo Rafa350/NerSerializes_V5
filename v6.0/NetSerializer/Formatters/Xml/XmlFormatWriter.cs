@@ -1,9 +1,9 @@
 using System.Text;
 using System.Xml;
-using NetSerializer.V6.Formaters.Xml.Infrastructure;
+using NetSerializer.V6.Formatters.Xml.Infrastructure;
 
 
-namespace NetSerializer.V6.Formaters.Xml {
+namespace NetSerializer.V6.Formatters.Xml {
 
     public sealed class XmlFormatWriter: FormatWriter {
         
@@ -131,6 +131,20 @@ namespace NetSerializer.V6.Formaters.Xml {
 
         /// <inheritdoc/>
         /// 
+        public override void WriteDecimal(string name, decimal value) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "v" : "value");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value);
+            _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
         public override void WriteString(string name, string? value) {
 
             if (String.IsNullOrEmpty(value))
@@ -146,6 +160,20 @@ namespace NetSerializer.V6.Formaters.Xml {
                 _writer.WriteValue(value);
                 _writer.WriteEndElement();
             }
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteEnum(string name, Enum value) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "v" : "value");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteValue(value.ToString());
+            _writer.WriteEndElement();
         }
 
         /// <inheritdoc/>

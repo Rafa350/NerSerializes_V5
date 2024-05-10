@@ -41,6 +41,15 @@ namespace NetSerializer.V6 {
         void WriteDouble(string name, double value);
 
         /// <summary>
+        /// Escriu un valor decimal.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteDecimal(string name, decimal value);
+
+        /// <summary>
         /// Escriu un valor string.
         /// </summary>
         /// <param name="name">El nom del valor.</param>
@@ -48,6 +57,15 @@ namespace NetSerializer.V6 {
         /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteString(string name, string? value);
+
+        /// <summary>
+        /// Escriu un valor enum.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteEnum(string name, Enum value);
 
         /// <summary>
         /// Escriu un valor nul.

@@ -13,20 +13,10 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
+        public override void Serialize(SerializationContext context, object? obj) {
 
-            Debug.Assert(CanProcess(type));
-
-            var writer = context.Writer;
-
-            if (writer.CanWriteValue(type))
-                writer.WriteValue(name, obj);
-
-            else {
-                writer.WriteStructHeader(name, obj);
+            if (obj != null)
                 SerializeStruct(context, obj);
-                writer.WriteStructTail();
-            }
         }
 
         /// <inheritdoc/>
@@ -51,6 +41,8 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
                 reader.ReadStructTail();
             }
+
+            obj = null;
         }
 
         /// <summary>
@@ -61,11 +53,17 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// 
         protected virtual void SerializeStruct(SerializationContext context, object obj) {
 
-            var type = obj.GetType();
-            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
+            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(obj.GetType());
 
-            foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
-                SerializeProperty(context, obj, propertyDescriptor);
+            // Si pot, es serialitza ell mateix.
+            //
+            if (typeDescriptor.CanSerialize)
+                typeDescriptor.Serialize(context, obj);
+
+            else {
+                foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
+                    SerializeProperty(context, obj, propertyDescriptor);
+            }
         }
 
         /// <summary>

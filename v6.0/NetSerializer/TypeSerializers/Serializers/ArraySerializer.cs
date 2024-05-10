@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using NetSerializer.V6.Formaters;
+using NetSerializer.V6.Formatters;
 /*
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 

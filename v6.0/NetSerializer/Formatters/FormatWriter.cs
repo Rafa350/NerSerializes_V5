@@ -1,4 +1,4 @@
-namespace NetSerializer.V6.Formaters {
+namespace NetSerializer.V6.Formatters {
 
     public abstract class FormatWriter: IDisposable {
 
@@ -41,12 +41,28 @@ namespace NetSerializer.V6.Formaters {
         public abstract void WriteDouble(string name, double value);
 
         /// <summary>
+        /// Escriu un valor decimal
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteDecimal(string name, decimal value);
+
+        /// <summary>
         /// Escriu un valor string
         /// </summary>
         /// <param name="name">El nom.</param>
         /// <param name="value">El valor.</param>
         /// 
         public abstract void WriteString(string name, string? value);
+
+        /// <summary>
+        /// Escriu un valor enum
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteEnum(string name, Enum value);
 
         public abstract void WriteNull(string name);
 

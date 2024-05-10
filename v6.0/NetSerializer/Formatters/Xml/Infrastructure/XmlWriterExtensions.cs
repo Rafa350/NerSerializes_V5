@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace NetSerializer.V6.Formaters.Xml.Infrastructure {
+namespace NetSerializer.V6.Formatters.Xml.Infrastructure {
 
     internal static class XmlWriterExtensions {
 
