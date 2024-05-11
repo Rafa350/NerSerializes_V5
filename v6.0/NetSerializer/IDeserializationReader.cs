@@ -46,10 +46,18 @@ namespace NetSerializer.V6 {
         /// Llegeix un valor enum.
         /// </summary>
         /// <param name="name">El nom.</param>
-        /// <param name="type">El tipus del enumerador</param>
         /// <returns>El valor.</returns>
         /// 
         T ReadEnum<T>(string name) where T: struct;
+
+        /// <summary>
+        /// Llegeix un valor enum.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="type">El tipus del enumerador</param>
+        /// <returns>El valor.</returns>
+        /// 
+        object ReadEnum(string name, Type type);
 
         /// <summary>
         /// Llegeix un valor string.

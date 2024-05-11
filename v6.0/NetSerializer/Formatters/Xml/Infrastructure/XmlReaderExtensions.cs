@@ -4,16 +4,36 @@ namespace NetSerializer.V6.Formatters.Xml.Infrastructure {
 
     internal static class XmlReaderExtensions {
 
-        public static IDictionary<string, string> ReadAttributes(this XmlReader reader) {
+        public static bool AttributeExist(this XmlReader reader, string name) {
 
-            var attributes = new Dictionary<string, string>();
-            if (reader.HasAttributes) {
-                while (reader.MoveToNextAttribute())
-                    attributes.Add(reader.Name, reader.Value);
-                reader.MoveToElement();
-            }
+            return reader.GetAttribute(name) != null;
+        }
 
-            return attributes;
+        public static bool GetAttributeAsBool(this XmlReader reader, string name) {
+
+            var value = reader.GetAttribute(name);
+            if (value == null)
+                throw new InvalidOperationException($"No se encontro el valor del atributo '{name}'.");
+
+            return Boolean.Parse(value);
+        }
+
+        public static int GetAttributeAsInt(this XmlReader reader, string name) {
+
+            var value = reader.GetAttribute(name);
+            if (value == null)
+                throw new InvalidOperationException($"No se encontro el valor del atributo '{name}'.");
+
+            return Int32.Parse(value);
+        }
+
+        public static string GetAttributeAsString(this XmlReader reader, string name) {
+
+            var value = reader.GetAttribute(name);
+            if (value == null)
+                throw new InvalidOperationException($"No se encontro el valor del atributo '{name}'.");
+
+            return value;
         }
     }
 }

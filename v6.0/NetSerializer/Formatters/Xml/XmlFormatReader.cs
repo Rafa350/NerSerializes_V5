@@ -61,18 +61,16 @@ namespace NetSerializer.V6.Formatters.Xml {
             //
             _reader.Read();
             if (_reader.HasAttributes) {
-                var attributes = _reader.ReadAttributes();
-                string value;
-                if (attributes.TryGetValue("version", out value))
-                    _serializerVersion = XmlConvert.ToInt32(value);
-                if (attributes.TryGetValue("useNames", out value))
-                    _useNames = XmlConvert.ToBoolean(value);
-                if (attributes.TryGetValue("compactMode", out value))
-                    _compactMode = XmlConvert.ToBoolean(value);
-                if (attributes.TryGetValue("useMeta", out value))
-                    _useMeta = XmlConvert.ToBoolean(value);
-                if (attributes.TryGetValue("encodeStrings", out value))
-                    _encodedStrings = XmlConvert.ToBoolean(value);
+                if (_reader.AttributeExist("version"))
+                    _serializerVersion = _reader.GetAttributeAsInt("version");
+                if (_reader.AttributeExist("useNames"))
+                    _useNames = _reader.GetAttributeAsBool("useNames");
+                if (_reader.AttributeExist("compactMode"))
+                    _compactMode = _reader.GetAttributeAsBool("compactMode");
+                if (_reader.AttributeExist("useMeta"))
+                    _useMeta = _reader.GetAttributeAsBool("useMeta");
+                if (_reader.AttributeExist("encodeStrings"))
+                    _encodedStrings = _reader.GetAttributeAsBool("encodeStrings");
             }
 
             if (_checkNames && !_useNames)
@@ -82,9 +80,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             //
             _reader.Read();
             if (_reader.HasAttributes) {
-                var attributes = _reader.ReadAttributes();
-                if (attributes.TryGetValue("version", out string value))
-                    _dataVersion = XmlConvert.ToInt32(value);
+                if (_reader.AttributeExist("version"))
+                    _dataVersion = _reader.GetAttributeAsInt("version");
             }
 
             // Es posiciona en el seguent element despres de <data>
@@ -169,6 +166,15 @@ namespace NetSerializer.V6.Formatters.Xml {
             return Enum.Parse<T>(_reader.ReadElementContentAsString());
         }
 
+        public override object ReadEnum(string name, Type type) {
+
+            if (!CheckValueNode(name))
+                throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
+
+            return Enum.Parse(type, _reader.ReadElementContentAsString());
+        }
+
+
         /// <inheritdoc/>
         /// 
         public override string? ReadString(string name) {
@@ -181,9 +187,38 @@ namespace NetSerializer.V6.Formatters.Xml {
 
         /// <inheritdoc/>
         /// 
-        public override object? ReadObject(string name) {
+        public override ObjectHeaderType ReadObjectHeader(string name, out int id, out Type type) {
 
-            return null;
+            ObjectHeaderType result;
+
+            if (_reader.Name == (_compactMode ? "o" : "object")) {
+                id = _reader.GetAttributeAsInt("id");
+                type = Type.GetType(_reader.GetAttributeAsString("type"), true);
+                result = ObjectHeaderType.Object;
+            }
+            else if (_reader.Name == (_compactMode ? "r" : "reference")) {
+                id = _reader.GetAttributeAsInt("id");
+                type = typeof(object);
+                result = ObjectHeaderType.Reference;
+            }
+            else if (_reader.Name == (_compactMode ? "n" : "null")) {
+                id = -1;
+                type = typeof(object);
+                result = ObjectHeaderType.Null;
+            }
+            else
+                throw new InvalidOperationException($"Se esperaba un nodo '<object>', '<reference>' o '<null>'.");
+
+            _reader.Read();
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void ReadObjectTail() {
+
+            _reader.Read();
         }
 
         /// <summary>
@@ -198,7 +233,7 @@ namespace NetSerializer.V6.Formatters.Xml {
                 return false;
 
             if (_useNames && _checkNames)
-                if (name != _reader.GetAttribute("name"))
+                if (name != _reader.GetAttributeAsString("name"))
                     return false;
 
             return true;

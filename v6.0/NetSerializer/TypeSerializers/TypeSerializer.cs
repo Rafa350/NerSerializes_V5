@@ -16,6 +16,6 @@
 
         /// <inheritdoc/>
         /// 
-        public abstract void Deserialize(DeserializationContext context, string name, Type type, out object? obj);
+        public abstract void Deserialize(DeserializationContext context, object obj);
     }
 }

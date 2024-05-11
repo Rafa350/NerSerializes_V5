@@ -1,5 +1,11 @@
 ﻿namespace NetSerializer.V6.Formatters {
 
+    public enum ObjectHeaderType {
+        Null,
+        Reference,
+        Object
+    }
+
     public abstract class FormatReader: IDisposable {
 
         /// <summary>
@@ -20,9 +26,13 @@
 
         public abstract T ReadEnum<T>(string name) where T: struct;
 
+        public abstract object ReadEnum(string name, Type type);
+
         public abstract string? ReadString(string name);
 
-        public abstract object? ReadObject(string name);
+        public abstract ObjectHeaderType ReadObjectHeader(string name, out int id, out Type type);
+
+        public abstract void ReadObjectTail();
 
         public abstract void Dispose();
     }

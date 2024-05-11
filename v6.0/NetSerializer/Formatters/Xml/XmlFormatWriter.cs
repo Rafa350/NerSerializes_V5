@@ -222,7 +222,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (_useNames)
                 _writer.WriteAttributeString("name", name);
 
-            _writer.WriteAttributeString("type", type.ToString());
+            var typeName = $"{type}, {type.Assembly.GetName().Name}";
+            _writer.WriteAttributeString("type", typeName);
             _writer.WriteAttributeInt("id", id);
         }
 

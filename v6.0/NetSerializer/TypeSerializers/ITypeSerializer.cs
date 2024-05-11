@@ -25,10 +25,8 @@
         /// Deserializa un objete.
         /// </summary>
         /// <param name="context">El context de deserialitzacio.</param>
-        /// <param name="name">El nom.</param>
-        /// <param name="type">Tipus del objecte a deserialitzar.</param>
         /// <param name="obj">Lobjecte a deserialitzar.</param>
         /// 
-        void Deserialize(DeserializationContext context, string name, Type type, out object? obj);
+        void Deserialize(DeserializationContext context, object obj);
     }
 }

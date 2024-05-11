@@ -23,6 +23,7 @@
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="object"/>
+                <xs:element ref="reference"/>
                 <xs:element ref="array"/>
                 <xs:element ref="null"/>
                 <xs:element ref="value"/>

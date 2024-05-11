@@ -64,14 +64,41 @@ namespace NetSerializer.V6.Formatters {
         /// 
         public abstract void WriteEnum(string name, Enum value);
 
+        /// <summary>
+        /// Escriu un valor null
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// 
         public abstract void WriteNull(string name);
 
+        /// <summary>
+        /// Escriu un objecte null.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// 
         public abstract void WriteObjectNull(string name);
 
+        /// <summary>
+        /// Escriu una referencia
+        /// </summary>
+        /// <param name="name">El num.</param>
+        /// <param name="id">El identificador.</param>
+        /// 
         public abstract void WriteObjectReference(string name, int id);
 
+        /// <summary>
+        /// Escriu la capcelera d'un objecte.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="type">El tipus.</param>
+        /// <param name="id">El identificador.</param>
+        /// 
         public abstract void WriteObjectHeader(string name, Type type, int id);
 
+        /// <summary>
+        /// Escriu el peu d'un objecte.
+        /// </summary>
+        /// 
         public abstract void WriteObjectTail();
 
         /// <summary>

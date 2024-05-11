@@ -1,4 +1,5 @@
 ﻿using NetSerializer.V6.Formatters;
+using NetSerializer.V6.TypeDescriptors;
 using NetSerializer.V6.TypeSerializers;
 
 namespace NetSerializer.V6 {
@@ -8,6 +9,11 @@ namespace NetSerializer.V6 {
         private readonly FormatWriter _writer;
         private readonly List<object> _items = [];
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="writer">El escriptor de dades.</param>
+        /// 
         public SerializationContext(FormatWriter writer) {
 
             _writer = writer;
@@ -15,59 +21,43 @@ namespace NetSerializer.V6 {
 
         /// <inherited/>
         ///
-        public void WriteBool(string name, bool value) {
-         
+        public void WriteBool(string name, bool value) =>
             _writer.WriteBool(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteInt(string name, int value) {
-            
+        public void WriteInt(string name, int value) =>
             _writer.WriteInt(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteSingle(string name, float value) {
-            
+        public void WriteSingle(string name, float value) =>
             _writer.WriteSingle(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteDouble(string name, double value) {
-            
+        public void WriteDouble(string name, double value) =>
             _writer.WriteDouble(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteDecimal(string name, decimal value) {
-
+        public void WriteDecimal(string name, decimal value) =>
             _writer.WriteDecimal(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteString(string name, string? value) {
-
+        public void WriteString(string name, string? value) =>
             _writer.WriteString(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteEnum(string name, Enum value) {
-
+        public void WriteEnum(string name, Enum value) =>
             _writer.WriteEnum(name, value);
-        }
 
         /// <inherited/>
         ///
-        public void WriteNull(string name) {
-
+        public void WriteNull(string name) =>
             _writer.WriteNull(name);
-        }
 
         /// <inherited/>
         ///
@@ -81,14 +71,36 @@ namespace NetSerializer.V6 {
                     _writer.WriteObjectReference(name, id);
             
                 else {                
-                    var type = obj.GetType();
-                    _writer.WriteObjectHeader(name, type, id);                
-
-                    var typeSerializer = GetTypeSerializer(type);
-                    typeSerializer?.Serialize(this, obj);
-
+                    _writer.WriteObjectHeader(name, obj.GetType(), id);
+                    SerializeObject(obj);
                     _writer.WriteObjectTail();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Serialitza un objecte.
+        /// </summary>
+        /// <param name="obj">L'objecte a serialitzar.</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// 
+        private void SerializeObject(object obj) {
+
+            var type = obj.GetType();
+
+            // Intenta amb els serialitzadors especifics.
+            //
+            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
+            if (typeDescriptor.CanSerialize)
+                typeDescriptor.Serialize(this, obj);
+
+            // Si no por, ho intenta amb el serialitzador generic.
+            //
+            else {
+                var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
+                if (typeSerializer == null)
+                    throw new InvalidOperationException($"No se encontro un serializador para el tipo '{type}'.");
+                typeSerializer.Serialize(this, obj);
             }
         }
 
@@ -111,18 +123,5 @@ namespace NetSerializer.V6 {
                 return false;
             }
         }        
-        
-        /// <summary>
-        /// Obte el serialitzador pel objecte especificat.
-        /// </summary>
-        /// <param name="obj">L'objecte.</param>
-        /// <returns>El seu serialitzador.</returns>
-        /// 
-        private static ITypeSerializer? GetTypeSerializer(object obj) {
-            
-            var typeSerializerProvider = TypeSerializerProvider.Instance;  
-            var type = obj.GetType();
-            return typeSerializerProvider.GetTypeSerializer(type);
-        }
     }
 }
