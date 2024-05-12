@@ -16,7 +16,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// <summary>
         /// Indica si es pot procesar la propietat.
         /// </summary>
-        /// <param name="propertyDescriptor">Descreiptor de la propietat.</param>
+        /// <param name="propertyDescriptor">Descriptor de la propietat.</param>
         /// <returns>True en cas afirmatiu.</returns>
         /// 
         protected virtual bool CanProcessProperty(PropertyDescriptor propertyDescriptor) {
@@ -92,7 +92,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                     else if (type == typeof(string))
                         context.WriteString(name, (string)value);
 
-                    else if (type.IsEnum) 
+                    else if (type.IsEnum)
                         context.WriteEnum(name, (Enum)value);
 
                     else
@@ -106,7 +106,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// </summary>
         /// <param name="context">El context de serialitzacio.</param>
         /// <param name="propertyDescriptor">El descriptor de la propietat.</param>
-        /// <returns>True en cas afitmatiu.</returns>
+        /// <returns>True en cas afirmatiu.</returns>
         /// 
         protected virtual bool CanSerializeProperty(SerializationContext context, PropertyDescriptor propertyDescriptor) {
 
@@ -163,7 +163,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                     propertyDescriptor.SetValue(obj, context.ReadEnum(name, propertyDescriptor.Type));
 
                 else
-                    propertyDescriptor.SetValue(obj, context.ReadObject(name));
+                    propertyDescriptor.SetValue(obj, context.ReadObject(name, propertyDescriptor.Type));
             }
         }
 

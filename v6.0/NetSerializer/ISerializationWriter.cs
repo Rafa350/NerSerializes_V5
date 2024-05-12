@@ -1,7 +1,5 @@
-using System;
-
 namespace NetSerializer.V6 {
-    
+
     public interface ISerializationWriter {
 
         /// <summary>
@@ -83,5 +81,14 @@ namespace NetSerializer.V6 {
         /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteObject(string name, object? obj);
+
+        /// <summary>
+        /// Escriu un struct.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// 
+        void WriteStruct<T>(string name, T value) where T: struct;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using NetSerializer.V6;
+﻿using NetSerializer.V6;
 using NetSerializer.V6.Formatters.Xml;
 
 namespace Demo {
@@ -20,69 +19,55 @@ namespace Demo {
         }
 
         class BaseClass {
-            public int Prop1 { get; set; } = 123;
-            public int Prop2 { get; set; } = 234;
-            public int Prop3 { get; set; } = 345;
-            public int Prop4 { get; set; } = 456;
+            public int PropInt1 { get; set; } = 123;
+            public int PropInt2 { get; set; } = 234;
+            public int PropInt3 { get; set; } = 345;
+            public int PropInt4 { get; set; } = 456;
             public EnumType PropEnum { get; set; } = EnumType.Hola;
             public string PropString { get; set; } = "Hola que tal";
         }
 
         class DerivedClass: BaseClass {
-            public double Prop11 { get; set; } = 1234.5;
-            public double Prop12 { get; set; } = 2345.6;
-            public double Prop13 { get; set; } = 3456.7;
-            public double Prop14 { get; set; } = 4567.8;
-            //public AStruct PropStruct { get; set; }
-            public BaseClass? Prop15 { get; set; } = null;
+            public double PropDouble1 { get; set; } = 1234.5;
+            public double PropDouble2 { get; set; } = 2345.6;
+            public double PropDouble3 { get; set; } = 3456.7;
+            public double PropDouble4 { get; set; } = 4567.8;
+            public AStruct PropStruct { get; set; }
+            public BaseClass? PropObject1 { get; set; } = null;
+            public BaseClass? PropObject2 { get; set; } = null;
         }
 
         static void Main(string[] args) {
 
-            SerializePrimitives(@"c:\temp\serialize_primitivers.xml");
-            DeserializePrimitives(@"c:\temp\serialize_primitivers.xml");
+            var obj1 = new DerivedClass();
+            obj1.PropObject1 = new DerivedClass();
+            obj1.PropObject2 = new BaseClass();
+
+            Serialize(@"c:\temp\serialize_primitive1.xml", obj1);
+            var obj2 = Deserialize<DerivedClass>(@"c:\temp\serialize_primitive1.xml");
+
+            Serialize(@"c:\temp\serialize_primitive2.xml", obj2);
         }
 
-        private static void SerializePrimitives(string fileName) {
-
-            var baseClass = new BaseClass();
-            var derivedClass = new DerivedClass();
-            derivedClass.Prop15 = new DerivedClass();
-            //derivedClass.PropStruct = new AStruct();
-
-            var typeName = typeof(BaseClass).FullName;
+        private static void Serialize(string fileName, object? obj) {
 
             using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None)) {
                 using (var formatWriter = new XmlFormatWriter(stream, 100)) {
                     var serializer = new Serializer(formatWriter);
                     var ctx = serializer.Context;
-                    ctx.WriteBool("vBool", true);
-                    ctx.WriteInt("vInt", 100);
-                    ctx.WriteSingle("vSingle", 10.0000f);
-                    ctx.WriteDouble("vDouble", 100000.5600000);
-                    ctx.WriteObject("vBaseClass1", baseClass);
-                    ctx.WriteObject("vBaseClass2", baseClass);
-                    ctx.WriteObject("DerivedClass2", derivedClass);
-                    ctx.WriteObject("vNullObject", null);
+                    ctx.WriteObject("root", obj);
                 }
             }
         }
 
-        private static void DeserializePrimitives(string fileName) {
+        private static T? Deserialize<T>(string fileName) {
  
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                 using (var formatReader = new XmlFormatReader(stream)) {
                     var deserializer = new Deserializer(formatReader);
                     var ctx = deserializer.Context;
 
-                    bool vBoolean = ctx.ReadBool("vBool");
-                    int vInt = ctx.ReadInt("vInt");
-                    float vSingle = ctx.ReadSingle("vSingle");
-                    double vDouble = ctx.ReadDouble("vDouble");
-                    var vBaseClass1 = ctx.ReadObject("vBaseClass1");
-                    var vBaseClass2 = ctx.ReadObject("vBaseClass2");
-                    var vDerivedClass2 = ctx.ReadObject("DerivedClass2");
-                    var nullobj = ctx.ReadObject("vNullObject");
+                    return ctx.ReadObject<T>("root");
                 }
             }
         }

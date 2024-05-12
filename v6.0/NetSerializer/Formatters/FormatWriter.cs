@@ -102,6 +102,19 @@ namespace NetSerializer.V6.Formatters {
         public abstract void WriteObjectTail();
 
         /// <summary>
+        /// Escriu la capcelera d'un struct.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// 
+        public abstract void WriteStructHeader(string name);
+
+        /// <summary>
+        /// Escriu el peu d'un struct.
+        /// </summary>
+        /// 
+        public abstract void WriteStructTail();
+
+        /// <summary>
         /// Disposa l'objecte.
         /// </summary>
         /// 

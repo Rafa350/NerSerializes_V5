@@ -22,9 +22,9 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>L'objecte.</returns>
         /// 
-        public object? Deserialize(string name) {
+        public T? Deserialize<T>(string name) {
 
-            return _context.ReadObject(name);
+            return _context.ReadObject<T>(name);
         }
         
         /// <summary>

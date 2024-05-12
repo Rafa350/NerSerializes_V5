@@ -233,6 +233,23 @@ namespace NetSerializer.V6.Formatters.Xml {
             
             _writer.WriteEndElement();
         }
+
+        public override void WriteStructHeader(string name) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "s" : "struct");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteStructTail() {
+
+            _writer.WriteEndElement();
+        }
     }
-    
+
 }

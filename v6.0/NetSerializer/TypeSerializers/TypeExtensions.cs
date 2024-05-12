@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NetSerializer.V6.TypeSerializers {
+﻿namespace NetSerializer.V6.TypeSerializers {
 
     /// <summary>
     /// Extensions de la clase 'Type'.
@@ -13,14 +11,20 @@ namespace NetSerializer.V6.TypeSerializers {
         /// <param name="type">This</param>
         /// <returns>True en cas afirmatiu.</returns>
         /// 
-        public static bool IsSpecialClass(this Type type) {
+        public static bool IsSpecialClass(this Type type) =>
+            (type == typeof(string)) ||
+            (type == typeof(DateTime)) ||
+            (type == typeof(TimeSpan)) ||
+            (type == typeof(Guid)) ||
+            (type == typeof(decimal));
 
-            return
-                (type == typeof(string)) ||
-                (type == typeof(DateTime)) ||
-                (type == typeof(TimeSpan)) ||
-                (type == typeof(Guid)) ||
-                (type == typeof(decimal));
-        }
+        /// <summary>
+        /// Identifica els struct.
+        /// </summary>
+        /// <param name="type">This</param>
+        /// <returns>True en cas afirmatiu.</returns>
+        /// 
+        public static bool IsStruct(this Type type) =>
+            type.IsValueType && !type.IsPrimitive && !type.IsEnum;
     }
 }

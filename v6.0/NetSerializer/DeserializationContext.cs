@@ -61,17 +61,26 @@ namespace NetSerializer.V6 {
 
         /// <inherited/>
         ///
-        public object? ReadObject(string name) {
+        public T? ReadObject<T>(string name) {
 
-            object? obj = null;
+            return (T?) ReadObject(name,  typeof(T));
+        }
 
-            switch (_reader.ReadObjectHeader(name, out int id, out Type type)) {
+        /// <inherited/>
+        ///
+        public object? ReadObject(string name, Type type) {
+
+            object? obj = default;
+
+            switch (_reader.ReadObjectHeader(name, out int id, out Type serializedType)) {
                 case ObjectHeaderType.Reference:
                     obj = GetObject(id);
                     break;
 
                 case ObjectHeaderType.Object:
-                    obj = CreateObject(type);
+                    if (!type.IsAssignableFrom(serializedType))
+                        throw new InvalidOperationException($"El type '{serializedType}' no se puede asignar a una propiedad de tipo tipo '{type}'.");
+                    obj = CreateObject(serializedType);
                     DeserializeObject(obj);
                     _reader.ReadObjectTail();
                     break;

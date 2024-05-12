@@ -78,6 +78,15 @@ namespace NetSerializer.V6 {
             }
         }
 
+        /// <inherited/>
+        ///
+        public void WriteStruct<T>(string name, T value) where T : struct {
+
+            _writer.WriteStructHeader(name);
+            SerializeObject(value);
+            _writer.WriteStructTail();
+        }
+
         /// <summary>
         /// Serialitza un objecte.
         /// </summary>

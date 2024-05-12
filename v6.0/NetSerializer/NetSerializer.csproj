@@ -16,4 +16,8 @@
     <EmbeddedResource Include="Formatters\Xml\Schemas\DataSchema.xsd" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
+
 </Project>

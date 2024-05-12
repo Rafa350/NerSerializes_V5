@@ -73,7 +73,16 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>L'objecte.</returns>
         /// 
-        object? ReadObject(string name);
+        T? ReadObject<T>(string name);
+
+        /// <summary>
+        /// Llegeix un objecte.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="type">El Tipus del objecte.</param>
+        /// <returns>L'objecte.</returns>
+        /// 
+        object? ReadObject(string name, Type type);
     }
 
 }
