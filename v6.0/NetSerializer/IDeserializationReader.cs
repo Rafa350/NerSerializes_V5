@@ -83,6 +83,10 @@ namespace NetSerializer.V6 {
         /// <returns>L'objecte.</returns>
         /// 
         object? ReadObject(string name, Type type);
+
+        object ReadStruct(string name, Type type);
+
+        Array ReadArray(string name, Type type);
     }
 
 }

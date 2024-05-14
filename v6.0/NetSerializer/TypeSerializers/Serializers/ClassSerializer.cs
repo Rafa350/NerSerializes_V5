@@ -11,7 +11,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         /// <inheritdoc/>
         /// 
         public override bool CanProcess(Type type) =>
-            type.IsClass && !type.IsArray && !type.IsSpecialClass();
+            type.IsClassType();
 
         /// <summary>
         /// Indica si es pot procesar la propietat.
@@ -69,7 +69,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                 var value = propertyDescriptor.GetValue(obj);
 
                 if (value == null)
-                    context.WriteObject(name, null);
+                    context.WriteNull(name);
 
                 else {
                     var type = value.GetType();
@@ -95,8 +95,17 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                     else if (type.IsEnum)
                         context.WriteEnum(name, (Enum)value);
 
-                    else
+                    else if (type.IsStructType())
+                        context.WriteStruct(name, value);
+
+                    else if (type.IsClassType())
                         context.WriteObject(name, value);
+
+                    else if (type.IsArray)
+                        context.WriteArray(name, (Array) value);
+
+                    else
+                        throw new InvalidOperationException($"No es posible serializar la propiedad '{name}', de tipo '{type}'.");
                 }
             }
         }
@@ -162,8 +171,17 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                 else if (type.IsEnum)
                     propertyDescriptor.SetValue(obj, context.ReadEnum(name, propertyDescriptor.Type));
 
-                else
+                else if (type.IsStructType())
+                    propertyDescriptor.SetValue(obj, context.ReadStruct(name, propertyDescriptor.Type));
+
+                else if (type.IsClassType())
                     propertyDescriptor.SetValue(obj, context.ReadObject(name, propertyDescriptor.Type));
+
+                else if (type.IsArray)
+                    propertyDescriptor.SetValue(obj, context.ReadArray(name, propertyDescriptor.Type));
+
+                else
+                    throw new InvalidOperationException($"No es posible deserializar la propiedad '{name}' de tipo '{type}'.");
             }
         }
 

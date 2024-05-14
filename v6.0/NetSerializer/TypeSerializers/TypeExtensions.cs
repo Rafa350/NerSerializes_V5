@@ -6,12 +6,12 @@
     internal static class TypeExtensions {
 
         /// <summary>
-        /// Identifica les classes que s'utilitzen com a tipus (String, DateTime, etc).
+        /// Identifica tipus especials, son valors pero s'implementan com clases.
         /// </summary>
         /// <param name="type">This</param>
         /// <returns>True en cas afirmatiu.</returns>
         /// 
-        public static bool IsSpecialClass(this Type type) =>
+        public static bool IsSpecialType(this Type type) =>
             (type == typeof(string)) ||
             (type == typeof(DateTime)) ||
             (type == typeof(TimeSpan)) ||
@@ -19,12 +19,22 @@
             (type == typeof(decimal));
 
         /// <summary>
-        /// Identifica els struct.
+        /// Identifica els tipus class.
         /// </summary>
         /// <param name="type">This</param>
         /// <returns>True en cas afirmatiu.</returns>
         /// 
-        public static bool IsStruct(this Type type) =>
+        public static bool IsClassType(this Type type) =>
+            type.IsClass && !type.IsArray && !type.IsSpecialType();
+
+
+        /// <summary>
+        /// Identifica els tipus struct.
+        /// </summary>
+        /// <param name="type">This</param>
+        /// <returns>True en cas afirmatiu.</returns>
+        /// 
+        public static bool IsStructType(this Type type) =>
             type.IsValueType && !type.IsPrimitive && !type.IsEnum;
     }
 }

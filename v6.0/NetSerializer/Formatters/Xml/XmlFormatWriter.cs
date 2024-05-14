@@ -191,13 +191,6 @@ namespace NetSerializer.V6.Formatters.Xml {
 
         /// <inheritdoc/>
         /// 
-        public override void WriteObjectNull(string name) {
-
-            WriteNull(name);
-        }
-
-        /// <inheritdoc/>
-        /// 
         public override void WriteObjectReference(string name, int id) {
 
             if (_useNames && String.IsNullOrEmpty(name))
@@ -247,6 +240,27 @@ namespace NetSerializer.V6.Formatters.Xml {
         /// <inheritdoc/>
         /// 
         public override void WriteStructTail() {
+
+            _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteArrayHeader(string name, int[] bound, int count) {
+
+            if (_useNames && String.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            _writer.WriteStartElement(_compactMode ? "a" : "array");
+            if (_useNames)
+                _writer.WriteAttributeString("name", name);
+            _writer.WriteAttributeInt("bound", bound);
+            _writer.WriteAttributeInt("count", count);
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteArrayTail() {
 
             _writer.WriteEndElement();
         }

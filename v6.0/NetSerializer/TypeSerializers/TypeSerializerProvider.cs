@@ -43,8 +43,8 @@ namespace NetSerializer.V6.TypeSerializers {
                 }
             }
 
-            //_serializerInstances.Add(new ArraySerializer());
-            //_serializerInstances.Add(new StructSerializer());
+            _serializerInstances.Add(new ArraySerializer());
+            _serializerInstances.Add(new StructSerializer());
             //_serializerInstances.Add(new ListSerializer());
             _serializerInstances.Add(new ClassSerializer());  // Cal que sigui l'ultima de la llista
         }

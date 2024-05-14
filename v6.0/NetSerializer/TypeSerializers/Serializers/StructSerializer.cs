@@ -1,122 +1,28 @@
-﻿using System;
-using System.Diagnostics;
-using NetSerializer.V6.TypeDescriptors;
-/*
-namespace NetSerializer.V6.TypeSerializers.Serializers {
+﻿namespace NetSerializer.V6.TypeSerializers.Serializers {
 
-    public class StructSerializer: TypeSerializer {
+    public class StructSerializer: ClassSerializer {
 
         /// <inheritdoc/>
         /// 
         public override bool CanProcess(Type type) =>
-            type.IsValueType && !type.IsPrimitive && !type.IsEnum;
+            type.IsStructType();
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, object? obj) {
+        public override void Serialize(SerializationContext context, object obj) {
 
-            if (obj != null)
-                SerializeStruct(context, obj);
-        }
-
-        /// <inheritdoc/>
-        /// 
-        public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
-
-            Debug.Assert(CanProcess(type));
-
-            var reader = context.Reader;
-
-            if (reader.CanReadValue(type))
-                obj = reader.ReadValue(name, type);
-
-            else {
-                reader.ReadStructHeader(name, type);
-
-                obj = Activator.CreateInstance(type);
-                if (obj == null)
-                    throw new InvalidOperationException($"No es posible crear una instancia de '{type}'.");
-                
-                DeserializeStruct(context, obj);
-
-                reader.ReadStructTail();
-            }
-
-            obj = null;
-        }
-
-        /// <summary>
-        /// Serialitza l'objecte.
-        /// </summary>
-        /// <param name="context">El context de serialitzacio.</param>
-        /// <param name="obj">L'objecte a serialitzar.</param>
-        /// 
-        protected virtual void SerializeStruct(SerializationContext context, object obj) {
-
-            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(obj.GetType());
-
-            // Si pot, es serialitza ell mateix.
+            // Si no es pot convertir a valor, es serializa com una clase
             //
-            if (typeDescriptor.CanSerialize)
-                typeDescriptor.Serialize(context, obj);
-
-            else {
-                foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
-                    SerializeProperty(context, obj, propertyDescriptor);
-            }
+            base.Serialize(context, obj);
         }
 
-        /// <summary>
-        /// Serialitza una propietat.
-        /// </summary>
-        /// <param name="context">El context de serialitzacio.</param>
-        /// <param name="obj">L'objecte.</param>
-        /// <param name="propertyDescriptor">El descriptor de la propietat.</param>
+        /// <inheritdoc/>
         /// 
-        protected virtual void SerializeProperty(SerializationContext context, object obj, PropertyDescriptor propertyDescriptor) {
+        public override void Deserialize(DeserializationContext context, object obj) {
 
-            if (propertyDescriptor.CanGetValue) {
-
-                var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
-                Debug.Assert(typeSerializer != null);
-                
-                typeSerializer.Serialize(context, propertyDescriptor.Name, propertyDescriptor.Type, propertyDescriptor.GetValue(obj));
-            }
-        }
-
-        /// <summary>
-        /// Deserialitza l'objecte.
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="obj">L'objecte a deserialitzar.</param>
-        /// 
-        protected virtual void DeserializeStruct(DeserializationContext context, object obj) {
-
-            var type = obj.GetType();
-            var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
-
-            foreach (var propertyDescriptor in typeDescriptor.PropertyDescriptors)
-                DeserializeProperty(context, obj, propertyDescriptor);
-        }
-
-        /// <summary>
-        /// Deserialitza una propietat.
-        /// </summary>
-        /// <param name="context">El context.</param>
-        /// <param name="obj">L'objecte.</param>
-        /// <param name="propertyDescriptor">El descriptor de la propietat.</param>
-        /// 
-        protected virtual void DeserializeProperty(DeserializationContext context, object obj, PropertyDescriptor propertyDescriptor) {
-
-            if (propertyDescriptor.CanSetValue) {
-                
-                var typeSerializer = context.GetTypeSerializer(propertyDescriptor.Type);
-                Debug.Assert(typeSerializer != null);
-
-                typeSerializer.Deserialize(context, propertyDescriptor.Name, propertyDescriptor.Type, out object? value);
-                propertyDescriptor.SetValue(obj, value);
-            }
+            // Si no es pot convertir a valor, es deserializa com una clase
+            //
+            base.Deserialize(context, obj);
         }
     }
 }
-*/

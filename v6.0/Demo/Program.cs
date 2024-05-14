@@ -12,9 +12,13 @@ namespace Demo {
 
         struct AStruct {
             public int IntegerProp { get; set; }
+            public float SingleProp { get; set; }
+            public double DoubleProp { get; set; }
 
             public AStruct() {
                 IntegerProp = 12345;
+                SingleProp = 12.345f;
+                DoubleProp = 123.45;
             }
         }
 
@@ -35,6 +39,7 @@ namespace Demo {
             public AStruct PropStruct { get; set; }
             public BaseClass? PropObject1 { get; set; } = null;
             public BaseClass? PropObject2 { get; set; } = null;
+            public int[,] PropIntArray {  get; set; } = { { 0, 1 }, { 10, 11 }, { 20, 21 } };
         }
 
         static void Main(string[] args) {
@@ -42,6 +47,7 @@ namespace Demo {
             var obj1 = new DerivedClass();
             obj1.PropObject1 = new DerivedClass();
             obj1.PropObject2 = new BaseClass();
+            //obj1.PropStruct = new AStruct();
 
             Serialize(@"c:\temp\serialize_primitive1.xml", obj1);
             var obj2 = Deserialize<DerivedClass>(@"c:\temp\serialize_primitive1.xml");
@@ -70,6 +76,12 @@ namespace Demo {
                     return ctx.ReadObject<T>("root");
                 }
             }
+        }
+
+        private void WriteValue(object value) {
+
+            if (!value.GetType().IsValueType)
+                throw new Exception();
         }
     }
 }

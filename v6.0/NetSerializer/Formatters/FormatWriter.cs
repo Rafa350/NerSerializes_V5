@@ -72,13 +72,6 @@ namespace NetSerializer.V6.Formatters {
         public abstract void WriteNull(string name);
 
         /// <summary>
-        /// Escriu un objecte null.
-        /// </summary>
-        /// <param name="name">El nom.</param>
-        /// 
-        public abstract void WriteObjectNull(string name);
-
-        /// <summary>
         /// Escriu una referencia
         /// </summary>
         /// <param name="name">El num.</param>
@@ -113,6 +106,21 @@ namespace NetSerializer.V6.Formatters {
         /// </summary>
         /// 
         public abstract void WriteStructTail();
+
+        /// <summary>
+        /// Escriu la capcelera d'un array.
+        /// </summary>
+        /// <param name="name">El nom.</param
+        /// <param name="bound">Nombre de dimensions</param>
+        /// <param name="count">Nombre d'elements.</param>
+        /// 
+        public abstract void WriteArrayHeader(string name, int[] bound, int count);
+
+        /// <summary>
+        /// Escriu el peu d'un array.
+        /// </summary>
+        /// 
+        public abstract void WriteArrayTail();
 
         /// <summary>
         /// Disposa l'objecte.

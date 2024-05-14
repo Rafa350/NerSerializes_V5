@@ -34,6 +34,14 @@
 
         public abstract void ReadObjectTail();
 
+        public abstract void ReadStructHeader(string name);
+
+        public abstract void ReadStructTail();
+
+        public abstract void ReadArrayHeader(string name, out int[] bound, out int count);
+
+        public abstract void ReadArrayTail();
+
         public abstract void Dispose();
     }
 }

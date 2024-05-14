@@ -7,7 +7,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteBool(string name, bool value);
 
@@ -16,7 +15,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteInt(string name, int value);
 
@@ -25,7 +23,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteSingle(string name, float value);
 
@@ -34,7 +31,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteDouble(string name, double value);
 
@@ -43,7 +39,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteDecimal(string name, decimal value);
 
@@ -52,7 +47,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteString(string name, string? value);
 
@@ -61,7 +55,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteEnum(string name, Enum value);
 
@@ -69,7 +62,6 @@ namespace NetSerializer.V6 {
         /// Escriu un valor nul.
         /// </summary>
         /// <param name="name">El nom del valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteNull(string name);
 
@@ -78,7 +70,6 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
         void WriteObject(string name, object? obj);
 
@@ -87,8 +78,15 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// 
-        void WriteStruct<T>(string name, T value) where T: struct;
+        void WriteStruct(string name, object value);
+
+        /// <summary>
+        /// Escriu un array.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteArray(string name, Array value);
     }
 }

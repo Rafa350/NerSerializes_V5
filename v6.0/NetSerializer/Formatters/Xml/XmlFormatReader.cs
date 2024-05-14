@@ -221,6 +221,47 @@ namespace NetSerializer.V6.Formatters.Xml {
             _reader.Read();
         }
 
+        /// <inheritdoc/>
+        /// 
+        public override void ReadStructHeader(string name) {
+
+            if (_reader.Name != (_compactMode ? "s" : "struct"))
+                throw new InvalidOperationException();
+
+            _reader.Read();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void ReadStructTail() {
+               
+            _reader.Read();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void ReadArrayHeader(string name, out int[] bound, out int count) {
+
+            if (_reader.Name != (_compactMode ? "a" : "array"))
+                throw new InvalidOperationException();
+
+            var boundStr = _reader.GetAttributeAsString("bound").Split([',']);
+            bound = new int[boundStr.Length];
+            for (var i = 0; i < boundStr.Length; i++)
+                bound[i] = Int32.Parse(boundStr[i]);
+
+            count = _reader.GetAttributeAsInt("count");
+
+            _reader.Read();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void ReadArrayTail() {
+
+            _reader.Read();
+        }
+
         /// <summary>
         /// Comprova si un node <value> es correcte.</value>
         /// </summary>

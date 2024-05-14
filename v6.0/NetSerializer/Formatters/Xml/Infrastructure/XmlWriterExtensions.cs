@@ -18,6 +18,22 @@ namespace NetSerializer.V6.Formatters.Xml.Infrastructure {
             writer.WriteEndAttribute();
         }
 
+        public static void WriteAttributeInt(this XmlWriter writer, string localName, int[] value) {
+
+            writer.WriteStartAttribute(localName);
+
+            bool first = true;
+            foreach (var v in value) {
+                if (first)
+                    first = false;
+                else
+                    writer.WriteValue(", ");
+                writer.WriteValue(v);
+            }
+
+            writer.WriteEndAttribute();
+        }
+
         public static void WriteAttributeFloat(this XmlWriter writer, string localName, float value) {
 
             writer.WriteStartAttribute(localName);

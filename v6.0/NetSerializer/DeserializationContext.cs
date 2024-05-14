@@ -89,6 +89,40 @@ namespace NetSerializer.V6 {
             return obj;
         }
 
+        /// <inherited/>
+        ///
+        public object ReadStruct(string name, Type type) {
+
+            object obj;
+
+            _reader.ReadStructHeader(name);
+            obj = CreateObject(type);
+            DeserializeObject(obj);
+            _reader.ReadStructTail();                
+
+            return obj;
+        }
+
+        public Array ReadArray(string name, Type type) {
+
+            _reader.ReadArrayHeader(name, out int[] bound, out int count);
+
+            var elementType = type.GetElementType();
+            if (elementType == null)
+                throw new InvalidOperationException("No es posible obtener el tipo de elemento del array.");
+            Array array = Array.CreateInstance(elementType, bound);
+
+            var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
+            if (typeSerializer == null)
+                throw new InvalidOperationException($"No se ncontro un deserializador para el tipo '{type}'.");
+            typeSerializer.Deserialize(this, array);
+
+            _reader.ReadArrayTail();
+
+            return array;
+        }
+
+
         /// <summary>
         /// Crea un objecte del tipus especificat.
         /// </summary>

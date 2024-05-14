@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using NetSerializer.V6.Formatters;
-/*
+
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     /// <summary>
@@ -18,84 +18,53 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, string name, Type type, object? obj) {
+        public override void Serialize(SerializationContext context, object obj) {
 
-            Debug.Assert(CanProcess(type));
+            var array = (Array)obj;
+            var type = array.GetType();
+            var elementType = type.GetElementType();
+            if (elementType == null)
+                throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
 
-
-            if (obj == null)
-                writer.WriteNull(name);
-
-            else {
-                Debug.Assert(obj is Array);
-                var array = (Array)obj;
-
-                writer.WriteArrayHeader(name, array);
-
-                var index = new MultidimensionalIndex(array);
-                do {
-
-                    var value = array.GetValue(index.Current);
-                    var elementType = type.GetElementType();
-                    if (elementType == null)
-                        throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
-                    var elementName = String.Format("{0}[{1}]", name, index);
-
-                    var typeSerializer = context.GetTypeSerializer(elementType);
-                    Debug.Assert(typeSerializer != null);
-
-                    typeSerializer.Serialize(context, elementName, elementType, value);
-
-                } while (index.Next());
-
-                writer.WriteArrayTail();
+            int position = 0;
+            foreach (var element in array ) {
+                if (elementType == typeof(int))
+                    context.WriteInt(position.ToString(), (int) element);
+                position++;
             }
+
+            /*var index = new MultidimensionalIndex(array);
+            do {
+                var elementValue = array.GetValue(index.Current);
+                var elementName = String.Format("[{0}]", index);
+
+            } while (index.Next());*/
         }
 
         /// <inheritdoc/>
         /// 
-        public override void Deserialize(DeserializationContext context, string name, Type type, out object? obj) {
+        public override void Deserialize(DeserializationContext context, object obj) {
 
-            Debug.Assert(CanProcess(type));
+            var array = (Array)obj;
+            var type = array.GetType();
+            var elementType = type.GetElementType();
 
-            var reader = context.Reader;
+            var index = new MultidimensionalIndex(array);
+            for (int i = 0; i < array.Length; i++) {
 
-            ReadArrayResult result = reader.ReadArrayHeader(name);
-            if (result.ResultType == ReadArrayResultType.Null)
-                obj = null;
+                var elementName = String.Format("[{0}]", index);
 
-            else {
-                var elementType = type.GetElementType();
-                if (elementType == null)
-                    throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
+                if (elementType == typeof(int))
+                    array.SetValue(context.ReadInt(elementName), index.Current);
 
-                var array = Array.CreateInstance(elementType, result.Bounds);
-
-                var index = new MultidimensionalIndex(array);
-                for (int i = 0; i < result.Count; i++) {
-
-                    var elementName = String.Format("{0}[{1}]", name, index);
-
-                    var typeSerializer = context.GetTypeSerializer(elementType);
-                    Debug.Assert(typeSerializer != null);
-
-                    typeSerializer.Deserialize(context, elementName, elementType, out object? elementValue);
-
-                    array.SetValue(elementValue, index.Current);
-
-                    index.Next();
-                }
-
-                reader.ReadArrayTail();
-
-                obj = array;
+                index.Next();
             }
-
         }
 
         /// <summary>
         /// Clase per la gestio dels index dels arrays
         /// </summary>
+        /// 
         private sealed class MultidimensionalIndex {
 
             private readonly int _dimensions;
@@ -149,4 +118,3 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
         }
     }
 }
-*/
