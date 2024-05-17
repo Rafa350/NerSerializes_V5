@@ -1,4 +1,5 @@
-﻿using NetSerializer.V6.Formatters;
+﻿using System.ComponentModel.DataAnnotations;
+using NetSerializer.V6.Formatters;
 using NetSerializer.V6.TypeDescriptors;
 using NetSerializer.V6.TypeSerializers;
 
@@ -198,7 +199,7 @@ namespace NetSerializer.V6 {
 
                 else {
                     _writer.WriteObjectHeader(name, type, id);
-                    SerializeObject(obj);
+                    SerializeObject(name, obj);
                     _writer.WriteObjectTail();
                 }
             }
@@ -215,21 +216,26 @@ namespace NetSerializer.V6 {
                 throw new InvalidOperationException($"Se esperaba un tipo 'struct', no '{type}'.");
 
             _writer.WriteStructHeader(name);
-            SerializeObject(value);
+            SerializeObject(name, value);
             _writer.WriteStructTail();
         }
 
         /// <inherited/>
         ///
-        public void WriteArray(string name, Array value) {
+        public void WriteArray(string name, Array? value) {
 
-            int[] bound = new int[value.Rank];
-            for (int i = 0; i < bound.Length; i++)
-                bound[i] = value.GetUpperBound(i) + 1;
+            if ((value == null) || (value.Length == 0))
+                _writer.WriteNull(name);
 
-            _writer.WriteArrayHeader(name, bound, value.Length);
-            SerializeArray(value);
-            _writer.WriteArrayTail();
+            else {
+                int[] bound = new int[value.Rank];
+                for (int i = 0; i < bound.Length; i++)
+                    bound[i] = value.GetUpperBound(i) + 1;
+
+                _writer.WriteArrayHeader(name, bound, value.Length);
+                SerializeArray(name, value);
+                _writer.WriteArrayTail();
+            }
         }
 
         /// <summary>
@@ -238,7 +244,7 @@ namespace NetSerializer.V6 {
         /// <param name="obj">L'objecte a serialitzar.</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// 
-        private void SerializeObject(object obj) {
+        private void SerializeObject(string name, object obj) {
 
             var type = obj.GetType();
 
@@ -254,7 +260,7 @@ namespace NetSerializer.V6 {
                 var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
                 if (typeSerializer == null)
                     throw new InvalidOperationException($"No se encontro un serializador para el objeto de tipo '{type}'.");
-                typeSerializer.Serialize(this, obj);
+                typeSerializer.Serialize(this, name, obj);
             }
         }
 
@@ -263,13 +269,13 @@ namespace NetSerializer.V6 {
         /// </summary>
         /// <param name="array">El array.</param>
         /// 
-        private void SerializeArray(Array array) {
+        private void SerializeArray(string name, Array array) {
 
             var type = array.GetType();
             var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
             if (typeSerializer == null)
                 throw new InvalidOperationException($"No se encontro un serializador para el array de tipo '{type}'.");
-            typeSerializer.Serialize(this, array);
+            typeSerializer.Serialize(this, name, array);
         }
 
         /// <summary>

@@ -15,9 +15,13 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, object obj) {
+        public override void Serialize(SerializationContext context, string name, object obj) {
 
             var array = (Array)obj;
+
+            if (array.Length == 0)
+                throw new InvalidOperationException("No se puede serializar un array vacio, ha de serializarse como 'null'.");
+
             var type = array.GetType();
             var elementType = type.GetElementType();
             if (elementType == null)
@@ -26,30 +30,16 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
             var index = new MultidimensionalIndex(array);
             do {
                 var elementValue = array.GetValue(index.Current);
-                var elementName = String.Format("[{0}]", index);
+                var elementName = String.Format("{0}[{1}]", name, index);
 
-                if (elementType == typeof(int))
-                    context.WriteValueInt(elementName, (int)elementValue);
-
-                else if (elementType == typeof(float))
-                    context.WriteValueSingle(elementName, (float)elementValue);
-
-                else if (elementType == typeof(double))
-                    context.WriteValueDouble(elementName, (double)elementValue);
-
-                else if (type.IsClassType())
-                    context.WriteObject(elementName, elementValue);
-
-                else
-                    throw new InvalidOperationException($"No esta soportado el tipo '{elementType}' como elemento de un array.");
-
+                context.Write(elementName, elementValue);
 
             } while (index.Next());
         }
 
         /// <inheritdoc/>
         /// 
-        public override void Deserialize(DeserializationContext context, object obj) {
+        public override void Deserialize(DeserializationContext context, string name, object obj) {
 
             var array = (Array)obj;
             var type = array.GetType();
@@ -59,19 +49,10 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
             var index = new MultidimensionalIndex(array);
             do {
-                var elementName = String.Format("[{0}]", index);
 
-                if (elementType == typeof(int))
-                    array.SetValue(context.ReadValueInt(elementName), index.Current);
+                var elementName = String.Format("{0}[{1}]", name, index);
 
-                else if (elementType == typeof(float))
-                    array.SetValue(context.ReadValueSingle(elementName), index.Current);
-
-                else if (elementType == typeof(double))
-                    array.SetValue(context.ReadValueDouble(elementName), index.Current);
-
-                else if (elementType.IsClassType())
-                    array.SetValue(context.ReadObject(elementName, elementType), index.Current);
+                array.SetValue(context.Read(elementName, elementType), index.Current);
 
             } while (index.Next());
         }

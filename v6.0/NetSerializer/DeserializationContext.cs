@@ -137,7 +137,7 @@ namespace NetSerializer.V6 {
                     if (!type.IsAssignableFrom(serializedType))
                         throw new InvalidOperationException($"El type '{serializedType}' no se puede asignar a una propiedad de tipo tipo '{type}'.");
                     obj = CreateObject(serializedType);
-                    DeserializeObject(obj);
+                    DeserializeObject(name, obj);
                     _reader.ReadObjectTail();
                     break;
             }
@@ -153,7 +153,7 @@ namespace NetSerializer.V6 {
 
             _reader.ReadStructHeader(name);
             obj = CreateObject(type);
-            DeserializeObject(obj);
+            DeserializeObject(name, obj);
             _reader.ReadStructTail();
 
             return obj;
@@ -173,7 +173,7 @@ namespace NetSerializer.V6 {
                 var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
                 if (typeSerializer == null)
                     throw new InvalidOperationException($"No se ncontro un deserializador para el tipo '{type}'.");
-                typeSerializer.Deserialize(this, array);
+                typeSerializer.Deserialize(this, name, array);
 
                 _reader.ReadArrayTail();
             }
@@ -202,9 +202,10 @@ namespace NetSerializer.V6 {
         /// <summary>
         /// Deserialitza un objecte.
         /// </summary>
+        /// <param name="name">El nom.</param>
         /// <param name="obj">L'objecte a deserialitzar.</param>
         /// 
-        private void DeserializeObject(object obj) {
+        private void DeserializeObject(string name, object obj) {
 
             var type = obj.GetType();
 
@@ -216,7 +217,7 @@ namespace NetSerializer.V6 {
                 var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
                 if (typeSerializer == null)
                     throw new InvalidOperationException($"No se ncontro un deserializador para el tipo '{type}'.");
-                typeSerializer.Deserialize(this, obj);
+                typeSerializer.Deserialize(this, name, obj);
             }
         }
 

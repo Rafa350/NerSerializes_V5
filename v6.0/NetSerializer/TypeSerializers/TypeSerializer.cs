@@ -12,10 +12,10 @@
 
         /// <inheritdoc/>
         /// 
-        public abstract void Serialize(SerializationContext context, object obj);
+        public abstract void Serialize(SerializationContext context, string name, object obj);
 
         /// <inheritdoc/>
         /// 
-        public abstract void Deserialize(DeserializationContext context, object obj);
+        public abstract void Deserialize(DeserializationContext context, string name, object obj);
     }
 }

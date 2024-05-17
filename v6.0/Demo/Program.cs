@@ -44,6 +44,7 @@ namespace Demo
             public AStruct PropStruct { get; set; }
             public BaseClass? PropObject1 { get; set; } = null;
             public BaseClass? PropObject2 { get; set; } = null;
+            public int[] EmptyArray { get; set; } = [];
             public int[,] PropIntArray {  get; set; } = { { 0, 1 }, { 10, 11 }, { 20, 21 } };
         }
 
@@ -98,6 +99,7 @@ namespace Demo
 
             public override object Read(XmlReader reader) {
                 reader.Read(); // Llegeix el valor
+                reader.Read(); // Llegeix el tail
                 reader.Read(); // Llegeix el tail
                 return new AStruct();
             }

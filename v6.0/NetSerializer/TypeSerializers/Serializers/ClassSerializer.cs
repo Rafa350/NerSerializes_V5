@@ -26,7 +26,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Serialize(SerializationContext context, object obj) {
+        public override void Serialize(SerializationContext context, string name, object obj) {
 
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(obj.GetType());
             SerializeObject(context, obj, typeDescriptor);
@@ -34,7 +34,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
 
         /// <inheritdoc/>
         /// 
-        public override void Deserialize(DeserializationContext context, object obj) {
+        public override void Deserialize(DeserializationContext context, string name, object obj) {
 
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(obj.GetType());
             DeserializeObject(context, obj, typeDescriptor);

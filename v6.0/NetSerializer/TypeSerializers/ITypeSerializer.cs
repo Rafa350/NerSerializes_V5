@@ -17,16 +17,18 @@
         /// Serializa un objete.
         /// </summary>
         /// <param name="context">El context de serialitzacio.</param>
+        /// <param name="name">El nom.</param>
         /// <param name="obj">L'objecte a serilitzar.</param>
         /// 
-        void Serialize(SerializationContext context, object obj);
+        void Serialize(SerializationContext context, string name, object obj);
 
         /// <summary>
         /// Deserializa un objete.
         /// </summary>
         /// <param name="context">El context de deserialitzacio.</param>
+        /// <param name="name">El nom.</param>
         /// <param name="obj">Lobjecte a deserialitzar.</param>
         /// 
-        void Deserialize(DeserializationContext context, object obj);
+        void Deserialize(DeserializationContext context, string name, object obj);
     }
 }

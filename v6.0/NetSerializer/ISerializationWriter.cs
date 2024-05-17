@@ -143,6 +143,6 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteArray(string name, Array value);
+        void WriteArray(string name, Array? value);
     }
 }
