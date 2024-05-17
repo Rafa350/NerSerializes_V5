@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
-using NetSerializer.V6.Formatters;
+﻿using System.Text;
 
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
@@ -26,19 +23,28 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
             if (elementType == null)
                 throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
 
-            int position = 0;
-            foreach (var element in array ) {
-                if (elementType == typeof(int))
-                    context.WriteInt(position.ToString(), (int) element);
-                position++;
-            }
-
-            /*var index = new MultidimensionalIndex(array);
+            var index = new MultidimensionalIndex(array);
             do {
                 var elementValue = array.GetValue(index.Current);
                 var elementName = String.Format("[{0}]", index);
 
-            } while (index.Next());*/
+                if (elementType == typeof(int))
+                    context.WriteValueInt(elementName, (int)elementValue);
+
+                else if (elementType == typeof(float))
+                    context.WriteValueSingle(elementName, (float)elementValue);
+
+                else if (elementType == typeof(double))
+                    context.WriteValueDouble(elementName, (double)elementValue);
+
+                else if (type.IsClassType())
+                    context.WriteObject(elementName, elementValue);
+
+                else
+                    throw new InvalidOperationException($"No esta soportado el tipo '{elementType}' como elemento de un array.");
+
+
+            } while (index.Next());
         }
 
         /// <inheritdoc/>
@@ -48,17 +54,26 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
             var array = (Array)obj;
             var type = array.GetType();
             var elementType = type.GetElementType();
+            if (elementType == null)
+                throw new InvalidOperationException("No se puede obtener el tipo de elemento del array.");
 
             var index = new MultidimensionalIndex(array);
-            for (int i = 0; i < array.Length; i++) {
-
+            do {
                 var elementName = String.Format("[{0}]", index);
 
                 if (elementType == typeof(int))
-                    array.SetValue(context.ReadInt(elementName), index.Current);
+                    array.SetValue(context.ReadValueInt(elementName), index.Current);
 
-                index.Next();
-            }
+                else if (elementType == typeof(float))
+                    array.SetValue(context.ReadValueSingle(elementName), index.Current);
+
+                else if (elementType == typeof(double))
+                    array.SetValue(context.ReadValueDouble(elementName), index.Current);
+
+                else if (elementType.IsClassType())
+                    array.SetValue(context.ReadObject(elementName, elementType), index.Current);
+
+            } while (index.Next());
         }
 
         /// <summary>

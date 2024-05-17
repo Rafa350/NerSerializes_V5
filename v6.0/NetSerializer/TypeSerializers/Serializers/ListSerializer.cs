@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Diagnostics;
-/*
+﻿/*
 namespace NetSerializer.V6.TypeSerializers.Serializers {
 
     public sealed class ListSerializer: ClassSerializer {

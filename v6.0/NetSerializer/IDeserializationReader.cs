@@ -1,14 +1,23 @@
 namespace NetSerializer.V6 {
 
     public interface IDeserializationReader {
-        
+
+        /// <summary>
+        /// Llegeix un valor del tipus especificat..
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="type">El tipus.</param>
+        /// <returns>EL valor.</returns>
+        /// 
+        object? Read(string name, Type type);
+
         /// <summary>
         /// Llegeix un valor bool.
         /// </summary>
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        bool ReadBool(string name);
+        bool ReadValueBool(string name);
 
         /// <summary>
         /// Llegeix un valor int.
@@ -16,7 +25,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        int ReadInt(string name);
+        int ReadValueInt(string name);
 
         /// <summary>
         /// Llegeix un valor float.
@@ -24,7 +33,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        float ReadSingle(string name);
+        float ReadValueSingle(string name);
 
         /// <summary>
         /// Llegeix un valor double.
@@ -32,7 +41,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        double ReadDouble(string name);
+        double ReadValueDouble(string name);
 
         /// <summary>
         /// Llegeix un valor decimal.
@@ -40,7 +49,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        decimal ReadDecimal(string name);
+        decimal ReadValueDecimal(string name);
 
         /// <summary>
         /// Llegeix un valor enum.
@@ -48,7 +57,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        T ReadEnum<T>(string name) where T: struct;
+        T ReadValueEnum<T>(string name) where T : struct;
 
         /// <summary>
         /// Llegeix un valor enum.
@@ -57,7 +66,15 @@ namespace NetSerializer.V6 {
         /// <param name="type">El tipus del enumerador</param>
         /// <returns>El valor.</returns>
         /// 
-        object ReadEnum(string name, Type type);
+        object ReadValueEnum(string name, Type type);
+
+        /// <summary>
+        /// Llegeix un valor char
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>El valor.</returns>
+        /// 
+        char ReadValueChar(string name);
 
         /// <summary>
         /// Llegeix un valor string.
@@ -65,7 +82,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom.</param>
         /// <returns>El valor.</returns>
         /// 
-        string? ReadString(string name);
+        string? ReadValueString(string name);
 
         /// <summary>
         /// Llegeix un objecte.
@@ -86,7 +103,13 @@ namespace NetSerializer.V6 {
 
         object ReadStruct(string name, Type type);
 
-        Array ReadArray(string name, Type type);
+        Array? ReadArray(string name, Type type);
+
+        /// <summary>
+        /// La versio del contingut per deserialitzar.
+        /// </summary>
+        /// 
+        int Version { get; }
     }
 
 }

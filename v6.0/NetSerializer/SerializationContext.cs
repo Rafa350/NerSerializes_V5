@@ -21,38 +21,160 @@ namespace NetSerializer.V6 {
 
         /// <inherited/>
         ///
-        public void WriteBool(string name, bool value) =>
+        public void Write(string name, object? value) {
+
+            if (value == null)
+                _writer.WriteNull(name);
+
+            else {
+                var type = value.GetType();
+
+                if (_writer.CanWriteValue(type))
+                    _writer.WriteValue(name, value);
+
+                else if (type.IsPrimitive || type.IsSpecialType()) {
+                    switch (Type.GetTypeCode(type)) {
+                        case TypeCode.Boolean:
+                            _writer.WriteBool(name, (bool)value);
+                            break;
+
+                        case TypeCode.Int32:
+                            _writer.WriteInt(name, (int)value);
+                            break;
+
+                        case TypeCode.Single:
+                            WriteValueSingle(name, (float)value);
+                            break;
+
+                        case TypeCode.Double:
+                            _writer.WriteDouble(name, (double)value);
+                            break;
+
+                        case TypeCode.Decimal:
+                            _writer.WriteDecimal(name, (decimal)value);
+                            break;
+
+                        case TypeCode.Char:
+                            _writer.WriteChar(name, (char)value);
+                            break;
+
+                        case TypeCode.String:
+                            _writer.WriteString(name, (string)value);
+                            break;
+
+                        default:
+                            throw new InvalidOperationException("No es posible serializar el valor '{name}'.");
+                    }
+                }
+
+                else if (type.IsEnum)
+                    _writer.WriteEnum(name, (Enum)value);
+
+                else if (type.IsStructType())
+                    WriteStruct(name, value);
+
+                else if (type.IsClassType())
+                    WriteObject(name, value);
+
+                else if (type.IsArray)
+                    WriteArray(name, (Array)value);
+
+                else
+                    throw new InvalidOperationException("No es posible serializar el valor '{name}'.");
+            }
+        }
+    
+
+        /// <inherited/>
+        ///
+        public void WriteValueBool(string name, bool value) {
+
             _writer.WriteBool(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteInt(string name, int value) =>
+        public void WriteValueShort(string name, short value) {
+
+            throw new NotFiniteNumberException();
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueInt(string name, int value) {
+
             _writer.WriteInt(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteSingle(string name, float value) =>
+        public void WriteValueLong(string name, long value) {
+
+            throw new NotFiniteNumberException();
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueSingle(string name, float value) {
+
             _writer.WriteSingle(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteDouble(string name, double value) =>
+        public void WriteValueDouble(string name, double value) {
+
             _writer.WriteDouble(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteDecimal(string name, decimal value) =>
+        public void WriteValueDecimal(string name, decimal value) {
+
             _writer.WriteDecimal(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteString(string name, string? value) =>
+        public void WriteValueChar(string name, char value) {
+
+            _writer.WriteChar(name, value);
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueString(string name, string? value) {
+
             _writer.WriteString(name, value);
+        }
 
         /// <inherited/>
         ///
-        public void WriteEnum(string name, Enum value) =>
+        public void WriteValueDateTime(string name, DateTime value) {
+
+            throw new NotFiniteNumberException();
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueTimeSpan(string name, TimeSpan value) {
+
+            throw new NotFiniteNumberException();
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueGuid(string name, Guid value) {
+
+            throw new NotFiniteNumberException();
+        }
+
+        /// <inherited/>
+        ///
+        public void WriteValueEnum(string name, Enum value) {
+
             _writer.WriteEnum(name, value);
+        }
 
         /// <inherited/>
         ///
@@ -65,7 +187,7 @@ namespace NetSerializer.V6 {
 
             if (obj == null)
                 _writer.WriteNull(name);
-            
+
             else {
                 var type = obj.GetType();
                 if (!type.IsClassType())
@@ -73,8 +195,8 @@ namespace NetSerializer.V6 {
 
                 if (GetObjectId(obj, out int id))
                     _writer.WriteObjectReference(name, id);
-            
-                else {                
+
+                else {
                     _writer.WriteObjectHeader(name, type, id);
                     SerializeObject(obj);
                     _writer.WriteObjectTail();
@@ -168,6 +290,6 @@ namespace NetSerializer.V6 {
                 id = _items.Count - 1;
                 return false;
             }
-        }        
+        }
     }
 }

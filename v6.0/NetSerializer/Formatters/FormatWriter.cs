@@ -9,6 +9,22 @@ namespace NetSerializer.V6.Formatters {
         public abstract void Close();
 
         /// <summary>
+        /// Indica si pot escriure un valor.
+        /// </summary>
+        /// <param name="value">El valor.</param>
+        /// <returns>True si el por estriure, false en cas contrari.</returns>
+        /// 
+        public abstract bool CanWriteValue(Type type);
+
+        /// <summary>
+        /// Escriu un valor generic. Automaticament el formateja al tipus corresponent.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteValue(string name, object? value);
+
+        /// <summary>
         /// Escriu un valor bool
         /// </summary>
         /// <param name="name">El nom.</param>
@@ -49,6 +65,14 @@ namespace NetSerializer.V6.Formatters {
         public abstract void WriteDecimal(string name, decimal value);
 
         /// <summary>
+        /// Escriu un valor char
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        public abstract void WriteChar(string name, char value);
+
+        /// <summary>
         /// Escriu un valor string
         /// </summary>
         /// <param name="name">El nom.</param>
@@ -65,7 +89,7 @@ namespace NetSerializer.V6.Formatters {
         public abstract void WriteEnum(string name, Enum value);
 
         /// <summary>
-        /// Escriu un valor null
+        /// Escriu un element null
         /// </summary>
         /// <param name="name">El nom.</param>
         /// 

@@ -3,12 +3,28 @@ namespace NetSerializer.V6 {
     public interface ISerializationWriter {
 
         /// <summary>
+        /// Escriu un valor.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void Write(string name, object? value);
+
+        /// <summary>
         /// Escriu un valor boolean.
         /// </summary>
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteBool(string name, bool value);
+        void WriteValueBool(string name, bool value);
+
+        /// <summary>
+        /// Escriu un valor short.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueShort(string name, short value);
 
         /// <summary>
         /// Escriu un valor int.
@@ -16,7 +32,15 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteInt(string name, int value);
+        void WriteValueInt(string name, int value);
+
+        /// <summary>
+        /// Escriu un valor long.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueLong(string name, long value);
 
         /// <summary>
         /// Escriu un valor float.
@@ -24,7 +48,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteSingle(string name, float value);
+        void WriteValueSingle(string name, float value);
 
         /// <summary>
         /// Escriu un valor double.
@@ -32,7 +56,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteDouble(string name, double value);
+        void WriteValueDouble(string name, double value);
 
         /// <summary>
         /// Escriu un valor decimal.
@@ -40,7 +64,15 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteDecimal(string name, decimal value);
+        void WriteValueDecimal(string name, decimal value);
+
+        /// <summary>
+        /// Escriu un valor char.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueChar(string name, char value);
 
         /// <summary>
         /// Escriu un valor string.
@@ -48,7 +80,31 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteString(string name, string? value);
+        void WriteValueString(string name, string? value);
+
+        /// <summary>
+        /// Escriu un valor datetime.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueDateTime(string name, DateTime value);
+
+        /// <summary>
+        /// Escriu un valor timespan
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueTimeSpan(string name, TimeSpan value);
+
+        /// <summary>
+        /// Escriu un valor guid.
+        /// </summary>
+        /// <param name="name">El nom del valor.</param>
+        /// <param name="value">El valor.</param>
+        /// 
+        void WriteValueGuid(string name, Guid value);
 
         /// <summary>
         /// Escriu un valor enum.
@@ -56,7 +112,7 @@ namespace NetSerializer.V6 {
         /// <param name="name">El nom del valor.</param>
         /// <param name="value">El valor.</param>
         /// 
-        void WriteEnum(string name, Enum value);
+        void WriteValueEnum(string name, Enum value);
 
         /// <summary>
         /// Escriu un valor nul.

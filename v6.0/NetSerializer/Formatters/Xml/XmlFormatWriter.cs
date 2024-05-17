@@ -1,17 +1,20 @@
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using NetSerializer.V6.Formatters.Xml.Infrastructure;
-
+using NetSerializer.V6.Formatters.Xml.ValueFormatters;
 
 namespace NetSerializer.V6.Formatters.Xml {
 
     public sealed class XmlFormatWriter: FormatWriter {
-        
+
         private const int _serializerVersion = 500;
+
+        private static readonly CultureInfo _ci = CultureInfo.InvariantCulture;
 
         private XmlWriter _writer;
         private bool _isClosed = false;
-        
+
         private Encoding _encoding = Encoding.UTF8;
         private int _indentation = 4;
         private bool _useNames = true;
@@ -29,7 +32,7 @@ namespace NetSerializer.V6.Formatters.Xml {
         public XmlFormatWriter(Stream stream, int version) {
 
             ArgumentOutOfRangeException.ThrowIfNegative(version, nameof(version));
-            
+
             if (!stream.CanWrite)
                 throw new InvalidOperationException("El stream especificado no es de escritura.");
 
@@ -73,107 +76,132 @@ namespace NetSerializer.V6.Formatters.Xml {
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Escriu la capcelera els valors.
+        /// </summary>
+        /// <param name="name">El no,.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// 
-        public override void WriteBool(string name, bool value) {
-            
+        private void WriteValueHeader(string name) {
+
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
             _writer.WriteStartElement(_compactMode ? "v" : "value");
             if (_useNames)
                 _writer.WriteAttributeString("name", name);
-            _writer.WriteValue(value);
+        }
+
+        /// <summary>
+        /// Escriu el final del valor.
+        /// </summary>
+        /// 
+        private void WriteValueTail() {
+
             _writer.WriteEndElement();
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override bool CanWriteValue(Type type) {
+
+            return ValueFormatterProvider.Instance.GetValueFormatter(type, false) != null;
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteValue(string name, object? value) {
+
+            if (value == null)
+                WriteNull(name);
+
+            else {
+                var valueFormatter = ValueFormatterProvider.Instance.GetValueFormatter(value.GetType(), false);
+                if (valueFormatter != null) {
+                    WriteValueHeader(name);
+                    valueFormatter.Write(_writer, value);
+                    WriteValueTail();
+                }
+                else
+                    throw new InvalidOperationException($"No es posible escribir el valor '{name}' del tipo '{value.GetType()}'.");
+            }
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override void WriteBool(string name, bool value) {
+
+            WriteValueHeader(name);
+            _writer.WriteValue(value ? "True" : "False");
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteInt(string name, int value) {
 
-            if (_useNames && String.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
-
-            _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_useNames)
-                _writer.WriteAttributeString("name", name);
-            _writer.WriteValue(value);
-            _writer.WriteEndElement();
+            WriteValueHeader(name);
+            _writer.WriteValue(value.ToString());
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteSingle(string name, float value) {
-            
-            if (_useNames && String.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
 
-            _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_useNames)
-                _writer.WriteAttributeString("name", name);
-            _writer.WriteValue(value);
-            _writer.WriteEndElement();
+            WriteValueHeader(name);
+            _writer.WriteValue(value.ToString(_ci));
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteDouble(string name, double value) {
-            
-            if (_useNames && String.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
 
-            _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_useNames)
-                _writer.WriteAttributeString("name", name);
-            _writer.WriteValue(value);
-            _writer.WriteEndElement();
+            WriteValueHeader(name);
+            _writer.WriteValue(value.ToString(_ci));
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteDecimal(string name, decimal value) {
 
-            if (_useNames && String.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
+            WriteValueHeader(name);
+            _writer.WriteValue(value.ToString(_ci));
+            WriteValueTail();
+        }
 
-            _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_useNames)
-                _writer.WriteAttributeString("name", name);
-            _writer.WriteValue(value);
-            _writer.WriteEndElement();
+        /// <inheritdoc/>
+        /// 
+        public override void WriteChar(string name, char value) {
+
+            WriteValueHeader(name);
+            _writer.WriteValue(((int)value).ToString());
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteString(string name, string? value) {
 
-            if (String.IsNullOrEmpty(value))
-                WriteNull(name);
-
-            else {
-                if (_useNames && String.IsNullOrEmpty(name))
-                    throw new ArgumentNullException(nameof(name));
-
-                _writer.WriteStartElement(_compactMode ? "v" : "value");
-                if (_useNames)
-                    _writer.WriteAttributeString("name", name);
-                _writer.WriteValue(value);
-                _writer.WriteEndElement();
+            if (_encodedStrings) {
+                var bytes = Encoding.UTF8.GetBytes(value);
+                value = Convert.ToBase64String(bytes);
             }
+
+            WriteValueHeader(name);
+            _writer.WriteValue(value);
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
         /// 
         public override void WriteEnum(string name, Enum value) {
 
-            if (_useNames && String.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
-
-            _writer.WriteStartElement(_compactMode ? "v" : "value");
-            if (_useNames)
-                _writer.WriteAttributeString("name", name);
+            WriteValueHeader(name);
             _writer.WriteValue(value.ToString());
-            _writer.WriteEndElement();
+            WriteValueTail();
         }
 
         /// <inheritdoc/>
@@ -207,7 +235,7 @@ namespace NetSerializer.V6.Formatters.Xml {
         /// <inheritdoc/>
         /// 
         public override void WriteObjectHeader(string name, Type type, int id) {
-            
+
             if (_useNames && String.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
@@ -223,7 +251,7 @@ namespace NetSerializer.V6.Formatters.Xml {
         /// <inheritdoc/>
         /// 
         public override void WriteObjectTail() {
-            
+
             _writer.WriteEndElement();
         }
 

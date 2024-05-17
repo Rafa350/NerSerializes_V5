@@ -3,9 +3,9 @@ using NetSerializer.V6.Formatters;
 namespace NetSerializer.V6 {
 
     public sealed class Serializer {
-        
+
         private readonly SerializationContext _context;
-        
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -15,7 +15,7 @@ namespace NetSerializer.V6 {
 
             _context = new SerializationContext(writer);
         }
-        
+
         /// <summary>
         /// Serialitza un objecte.
         /// </summary>
@@ -23,10 +23,10 @@ namespace NetSerializer.V6 {
         /// <param name="obj">L'objecte.</param>
         /// 
         public void Serialize(string name, object obj) {
-            
+
             _context.WriteObject(name, obj);
         }
-            
+
         /// <summary>
         /// El context de serialitzacio.
         /// </summary>

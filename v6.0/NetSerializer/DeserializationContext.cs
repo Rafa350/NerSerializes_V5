@@ -5,65 +5,121 @@ using NetSerializer.V6.TypeSerializers;
 namespace NetSerializer.V6 {
 
     public sealed class DeserializationContext: IDeserializationReader {
-        
+
         private readonly FormatReader _reader;
         private readonly List<object> _items = [];
-        
+
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="reader">El lector de dades.</param>
         /// 
         public DeserializationContext(FormatReader reader) {
-            
+
             _reader = reader;
         }
-        
+
         /// <inherited/>
         ///
-        public bool ReadBool(string name) =>
+        public object? Read(string name, Type type) {
+
+            if (_reader.CanReadValue(type))
+                return _reader.ReadValue(name, type);
+
+            else if (type.IsPrimitive || type.IsSpecialType()) {
+                switch (Type.GetTypeCode(type)) {
+                    case TypeCode.Boolean:
+                        return _reader.ReadBool(name);
+
+                    case TypeCode.Int32:
+                        return _reader.ReadInt(name);
+
+                    case TypeCode.Single:
+                        return _reader.ReadSingle(name);
+
+                    case TypeCode.Double:
+                        return _reader.ReadDouble(name);
+
+                    case TypeCode.Decimal:
+                        return _reader.ReadDecimal(name);
+
+                    case TypeCode.String:
+                        return _reader.ReadString(name);
+
+                    case TypeCode.Char:
+                        return _reader.ReadChar(name);
+
+                    default:
+                        throw new InvalidOperationException($"No es posible deserializar el valor '{name}'.");
+                }
+            }
+           
+            else if (type.IsEnum)
+                return _reader.ReadEnum(name, type);
+
+            else if (type.IsStructType())
+                return ReadStruct(name, type);
+
+            else if (type.IsClassType())
+                return ReadObject(name, type);
+
+            else if (type.IsArray)
+                return ReadArray(name, type);
+
+            else
+                throw new InvalidOperationException($"No es posible deserializar el valor '{name}'.");
+        }
+           
+        /// <inherited/>
+        ///
+        public bool ReadValueBool(string name) =>
             _reader.ReadBool(name);
-        
+
         /// <inherited/>
         ///
-        public int ReadInt(string name) =>
+        public int ReadValueInt(string name) =>
             _reader.ReadInt(name);
-        
+
         /// <inherited/>
         ///
-        public float ReadSingle(string name) =>
+        public float ReadValueSingle(string name) =>
             _reader.ReadSingle(name);
-        
+
         /// <inherited/>
         ///
-        public double ReadDouble(string name) =>
+        public double ReadValueDouble(string name) =>
             _reader.ReadDouble(name);
 
         /// <inherited/>
         ///
-        public decimal ReadDecimal(string name) =>
+        public decimal ReadValueDecimal(string name) =>
             _reader.ReadDecimal(name);
 
         /// <inherited/>
         ///
-        public T ReadEnum<T>(string name) where T : struct =>
+        public T ReadValueEnum<T>(string name) where T : struct =>
             _reader.ReadEnum<T>(name);
 
         /// <inherited/>
         ///
-        public object ReadEnum(string name, Type type) =>
+        public object ReadValueEnum(string name, Type type) =>
             _reader.ReadEnum(name, type);
 
         /// <inherited/>
         ///
-        public string? ReadString(string name) =>
+        public char ReadValueChar(string name) =>
+            _reader.ReadChar(name);
+
+        /// <inherited/>
+        ///
+        public string? ReadValueString(string name) =>
             _reader.ReadString(name);
 
         /// <inherited/>
         ///
         public T? ReadObject<T>(string name) {
 
-            return (T?) ReadObject(name,  typeof(T));
+            return (T?)ReadObject(name, typeof(T));
         }
 
         /// <inherited/>
@@ -98,26 +154,29 @@ namespace NetSerializer.V6 {
             _reader.ReadStructHeader(name);
             obj = CreateObject(type);
             DeserializeObject(obj);
-            _reader.ReadStructTail();                
+            _reader.ReadStructTail();
 
             return obj;
         }
 
-        public Array ReadArray(string name, Type type) {
+        public Array? ReadArray(string name, Type type) {
 
-            _reader.ReadArrayHeader(name, out int[] bound, out int count);
+            Array? array = default(Array);
 
-            var elementType = type.GetElementType();
-            if (elementType == null)
-                throw new InvalidOperationException("No es posible obtener el tipo de elemento del array.");
-            Array array = Array.CreateInstance(elementType, bound);
+            if (_reader.ReadArrayHeader(name, out int[] bound, out int count) == ArrayHeaderType.Array) {
 
-            var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
-            if (typeSerializer == null)
-                throw new InvalidOperationException($"No se ncontro un deserializador para el tipo '{type}'.");
-            typeSerializer.Deserialize(this, array);
+                var elementType = type.GetElementType();
+                if (elementType == null)
+                    throw new InvalidOperationException("No es posible obtener el tipo de elemento del array.");
+                array = Array.CreateInstance(elementType, bound);
 
-            _reader.ReadArrayTail();
+                var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
+                if (typeSerializer == null)
+                    throw new InvalidOperationException($"No se ncontro un deserializador para el tipo '{type}'.");
+                typeSerializer.Deserialize(this, array);
+
+                _reader.ReadArrayTail();
+            }
 
             return array;
         }
@@ -152,7 +211,7 @@ namespace NetSerializer.V6 {
             var typeDescriptor = TypeDescriptorProvider.Instance.GetDescriptor(type);
             if (typeDescriptor.CanDeserialize)
                 typeDescriptor.Deserialize(this, obj);
-            
+
             else {
                 var typeSerializer = TypeSerializerProvider.Instance.GetTypeSerializer(type);
                 if (typeSerializer == null)
@@ -167,9 +226,14 @@ namespace NetSerializer.V6 {
         /// <param name="id">El identificador.</param>
         /// <returns>L'objecte.</returns>
         /// 
-        private object GetObject(int id) { 
-            
+        private object GetObject(int id) {
+
             return _items[id];
         }
+
+        /// <inherited/>
+        ///
+        public int Version =>
+            _reader.Version;
     }
 }

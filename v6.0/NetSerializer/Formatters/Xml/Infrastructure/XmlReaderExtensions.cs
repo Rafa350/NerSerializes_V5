@@ -4,11 +4,26 @@ namespace NetSerializer.V6.Formatters.Xml.Infrastructure {
 
     internal static class XmlReaderExtensions {
 
+        /// <summary>
+        /// Comprova si un atribut existeic.
+        /// </summary>
+        /// <param name="reader">El lector xml</param>
+        /// <param name="name">El nom del atribut.</param>
+        /// <returns>True si existeix, false en cas contrari.</returns>
+        /// 
         public static bool AttributeExist(this XmlReader reader, string name) {
 
             return reader.GetAttribute(name) != null;
         }
 
+        /// <summary>
+        /// Obte el valor d'un atribut com valor boolean.
+        /// </summary>
+        /// <param name="reader">El lector xml.</param>
+        /// <param name="name">El nom del atribut.</param>
+        /// <returns>El resultat.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// 
         public static bool GetAttributeAsBool(this XmlReader reader, string name) {
 
             var value = reader.GetAttribute(name);

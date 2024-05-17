@@ -1,7 +1,11 @@
 ﻿using NetSerializer.V6;
 using NetSerializer.V6.Formatters.Xml;
+using System.Globalization;
+using NetSerializer.V6.Formatters.Xml.ValueFormatters;
+using System.Xml;
 
-namespace Demo {
+namespace Demo
+{
 
     internal class Program {
 
@@ -36,6 +40,7 @@ namespace Demo {
             public double PropDouble2 { get; set; } = 2345.6;
             public double PropDouble3 { get; set; } = 3456.7;
             public double PropDouble4 { get; set; } = 4567.8;
+            public char PropChar { get; set; } = 'A';
             public AStruct PropStruct { get; set; }
             public BaseClass? PropObject1 { get; set; } = null;
             public BaseClass? PropObject2 { get; set; } = null;
@@ -47,7 +52,7 @@ namespace Demo {
             var obj1 = new DerivedClass();
             obj1.PropObject1 = new DerivedClass();
             obj1.PropObject2 = new BaseClass();
-            //obj1.PropStruct = new AStruct();
+            obj1.PropStruct = new AStruct();
 
             Serialize(@"c:\temp\serialize_primitive1.xml", obj1);
             var obj2 = Deserialize<DerivedClass>(@"c:\temp\serialize_primitive1.xml");
@@ -61,6 +66,7 @@ namespace Demo {
                 using (var formatWriter = new XmlFormatWriter(stream, 100)) {
                     var serializer = new Serializer(formatWriter);
                     var ctx = serializer.Context;
+                    ctx.Write("STR", new AStruct());
                     ctx.WriteObject("root", obj);
                 }
             }
@@ -72,16 +78,29 @@ namespace Demo {
                 using (var formatReader = new XmlFormatReader(stream)) {
                     var deserializer = new Deserializer(formatReader);
                     var ctx = deserializer.Context;
-
+                    var s = ctx.Read("STR", typeof(AStruct));
                     return ctx.ReadObject<T>("root");
                 }
             }
         }
 
-        private void WriteValue(object value) {
+        public class MyValueFormatter: ValueFormatter {
 
-            if (!value.GetType().IsValueType)
-                throw new Exception();
+            public override bool CanFormat(Type type) =>
+                type == typeof(AStruct);
+
+            public override void Write(XmlWriter writer, object obj) {
+
+                AStruct s = (AStruct)obj;
+                var value = String.Format(CultureInfo.InvariantCulture, "{0}, {1}, {2}", s.IntegerProp, s.SingleProp, s.DoubleProp);
+                writer.WriteValue(value);
+            }
+
+            public override object Read(XmlReader reader) {
+                reader.Read(); // Llegeix el valor
+                reader.Read(); // Llegeix el tail
+                return new AStruct();
+            }
         }
     }
 }

@@ -1,12 +1,16 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using NetSerializer.V6.Formatters.Xml.Infrastructure;
+using NetSerializer.V6.Formatters.Xml.ValueFormatters;
 
 namespace NetSerializer.V6.Formatters.Xml {
 
     public sealed class XmlFormatReader: FormatReader {
 
+        private static readonly CultureInfo _ci = CultureInfo.InvariantCulture;
         private const string _schemaResourceName = "NetSerializer.V6.Formatters.Xml.Schemas.DataSchema.xsd";
 
         private readonly XmlReader _reader;
@@ -36,10 +40,10 @@ namespace NetSerializer.V6.Formatters.Xml {
 
             var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(_schemaResourceName);
             if (resourceStream == null)
-                throw new Exception(String.Format("No se encontro el recurso '{0}'", _schemaResourceName));
+                throw new Exception(string.Format("No se encontro el recurso '{0}'", _schemaResourceName));
             var schema = XmlSchema.Read(resourceStream, null);
             if (schema == null)
-                throw new Exception(String.Format("No se pudo cargar el esquema '{0}'", _schemaResourceName));
+                throw new Exception(string.Format("No se pudo cargar el esquema '{0}'", _schemaResourceName));
 
             var readerSettings = new XmlReaderSettings {
                 IgnoreComments = true,
@@ -106,6 +110,30 @@ namespace NetSerializer.V6.Formatters.Xml {
             Close();
         }
 
+        public override bool CanReadValue(Type type) {
+
+            return ValueFormatterProvider.Instance.GetValueFormatter(type, false) != null;
+        }
+
+        public override object? ReadValue(string name, Type type) {
+
+            object? result = null;
+
+            if (!CheckNullNode(name)) {
+
+                var valueFormatter = ValueFormatterProvider.Instance.GetValueFormatter(type, false);
+                if (valueFormatter != null) {
+                    if (!CheckValueNode(name))
+                        throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
+                    result = valueFormatter.Read(_reader);
+                }
+                else
+                    throw new InvalidOperationException($"No es posible leer el valor '{name}' del tipo '{type}'.");
+            }
+
+            return result;
+        }
+
         /// <inheritdoc/>
         /// 
         public override bool ReadBool(string name) {
@@ -113,7 +141,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return _reader.ReadElementContentAsBoolean();
+            var content = _reader.ReadElementContentAsString();
+            return bool.Parse(content);
         }
 
         /// <inheritdoc/>
@@ -123,7 +152,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return _reader.ReadElementContentAsInt();
+            var content = _reader.ReadElementContentAsString();
+            return int.Parse(content);
         }
 
         /// <inheritdoc/>
@@ -133,7 +163,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return _reader.ReadElementContentAsFloat();
+            var content = _reader.ReadElementContentAsString();
+            return float.Parse(content, _ci);
         }
 
         /// <inheritdoc/>
@@ -143,7 +174,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return _reader.ReadElementContentAsDouble();
+            var content = _reader.ReadElementContentAsString();
+            return double.Parse(content, _ci);
         }
 
         /// <inheritdoc/>
@@ -153,7 +185,8 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return _reader.ReadElementContentAsDecimal();
+            var content = _reader.ReadElementContentAsString();
+            return decimal.Parse(content, _ci);
         }
 
         /// <inheritdoc/>
@@ -171,18 +204,43 @@ namespace NetSerializer.V6.Formatters.Xml {
             if (!CheckValueNode(name))
                 throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
 
-            return Enum.Parse(type, _reader.ReadElementContentAsString());
+            var content = _reader.ReadElementContentAsString();
+            return Enum.Parse(type, content);
         }
 
+        /// <inheritdoc/>
+        /// 
+        public override char ReadChar(string name) {
+
+            if (!CheckValueNode(name))
+                throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
+
+            var content = _reader.ReadElementContentAsString();
+            return (char)int.Parse(content);
+        }
 
         /// <inheritdoc/>
         /// 
         public override string? ReadString(string name) {
 
-            if (!CheckValueNode(name))
-                throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
+            if (CheckValueNode(name)) {
+                var value = _reader.ReadElementContentAsString();
 
-            return _reader.ReadElementContentAsString();
+                if (_encodedStrings) {
+                    var bytes = Convert.FromBase64String(value);
+                    value = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                }
+
+                return value;
+            }
+
+            else if (CheckNullNode(name)) {
+                _reader.Read();
+                return null;
+            }
+
+            else
+                throw new InvalidOperationException($"Se esperaba un nodo '<value Name=\"{name}\">.");
         }
 
         /// <inheritdoc/>
@@ -234,25 +292,39 @@ namespace NetSerializer.V6.Formatters.Xml {
         /// <inheritdoc/>
         /// 
         public override void ReadStructTail() {
-               
+
             _reader.Read();
         }
 
         /// <inheritdoc/>
         /// 
-        public override void ReadArrayHeader(string name, out int[] bound, out int count) {
+        public override ArrayHeaderType ReadArrayHeader(string name, out int[] bound, out int count) {
 
-            if (_reader.Name != (_compactMode ? "a" : "array"))
-                throw new InvalidOperationException();
+            ArrayHeaderType result;
 
-            var boundStr = _reader.GetAttributeAsString("bound").Split([',']);
-            bound = new int[boundStr.Length];
-            for (var i = 0; i < boundStr.Length; i++)
-                bound[i] = Int32.Parse(boundStr[i]);
+            if (_reader.Name == (_compactMode ? "a" : "array")) {
 
-            count = _reader.GetAttributeAsInt("count");
+                var boundStr = _reader.GetAttributeAsString("bound").Split([',']);
+                bound = new int[boundStr.Length];
+                for (var i = 0; i < boundStr.Length; i++)
+                    bound[i] = int.Parse(boundStr[i]);
+
+                count = _reader.GetAttributeAsInt("count");
+                result = ArrayHeaderType.Array;
+            }
+
+            else if (_reader.Name == (_compactMode ? "n" : "null")) {
+
+                bound = [];
+                count = 0;
+                result = ArrayHeaderType.Null;
+            }
+            else
+                throw new InvalidOperationException($"Se esperaba un nodo '<array>' o '<null>'.");
 
             _reader.Read();
+
+            return result;
         }
 
         /// <inheritdoc/>
@@ -279,5 +351,28 @@ namespace NetSerializer.V6.Formatters.Xml {
 
             return true;
         }
+
+        /// <summary>
+        /// Comprova si un node <null> es correcte.</value>
+        /// </summary>
+        /// <param name="name">El nom del node</param>
+        /// <returns>True si tot es correcte.</returns>
+        /// 
+        private bool CheckNullNode(string name) {
+
+            if (_reader.Name != (_compactMode ? "n" : "null"))
+                return false;
+
+            if (_useNames && _checkNames)
+                if (name != _reader.GetAttributeAsString("name"))
+                    return false;
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        /// 
+        public override int Version =>
+            _dataVersion;
     }
 }

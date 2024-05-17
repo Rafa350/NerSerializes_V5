@@ -9,8 +9,8 @@ namespace NetSerializer.V6.TypeSerializers {
     public sealed class TypeSerializerProvider {
 
         private static TypeSerializerProvider? _instance;
-        private readonly List<ITypeSerializer> _serializerInstances = [];
-        private readonly Dictionary<Type, ITypeSerializer> _serializerCache = [];
+        private readonly List<ITypeSerializer> _serializers = [];
+        private readonly Dictionary<Type, ITypeSerializer> _cache = [];
 
         /// <summary>
         /// Constructor de la clase. Es privat per implementar una clase singleton.
@@ -36,17 +36,17 @@ namespace NetSerializer.V6.TypeSerializers {
                     // Afegeix si es una clase derivada de 'CustomTypeSerializer'.
                     //
                     if (type.IsClass && !type.IsAbstract && typeof(CustomClassSerializer).IsAssignableFrom(type)) {
-                        var serializer = (ITypeSerializer?) Activator.CreateInstance(type);
-                        if (serializer != null) 
-                            _serializerInstances.Add(serializer);
+                        var serializer = (ITypeSerializer?)Activator.CreateInstance(type);
+                        if (serializer != null)
+                            _serializers.Add(serializer);
                     }
                 }
             }
 
-            _serializerInstances.Add(new ArraySerializer());
-            _serializerInstances.Add(new StructSerializer());
+            _serializers.Add(new ArraySerializer());
+            _serializers.Add(new StructSerializer());
             //_serializerInstances.Add(new ListSerializer());
-            _serializerInstances.Add(new ClassSerializer());  // Cal que sigui l'ultima de la llista
+            _serializers.Add(new ClassSerializer());  // Cal que sigui l'ultima de la llista
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace NetSerializer.V6.TypeSerializers {
         /// 
         public ITypeSerializer? GetTypeSerializer(Type type, bool throwOnError = true) {
 
-            if (!_serializerCache.TryGetValue(type, out ITypeSerializer? serializer)) {
+            if (!_cache.TryGetValue(type, out ITypeSerializer? serializer)) {
 
-                serializer = _serializerInstances.Find(item => item.CanProcess(type));
+                serializer = _serializers.Find(item => item.CanProcess(type));
                 if (serializer != null)
-                    _serializerCache.Add(type, serializer);
+                    _cache.Add(type, serializer);
 
                 else if (throwOnError)
                     throw new InvalidOperationException($"No se registró el serializador para el tipo '{type}'.");

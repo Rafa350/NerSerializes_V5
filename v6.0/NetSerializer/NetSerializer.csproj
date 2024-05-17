@@ -1,11 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+     <Version>$(CustomVersion)</Version>
+     <Authors>$(CustomAuthors)</Authors>
+     <Product>$(CustomProduct)</Product>
+     <Copyright>$(CustomCopyright)</Copyright>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_")).V6</RootNamespace>
     <BaseOutputPath>..\bin\</BaseOutputPath>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Users\Rafael\Documents\Projectes\Net\NetSerializer\v6.0\Signature\NetSerializerKeyPair.snk</AssemblyOriginatorKeyFile>
+    <PackageIcon>PackageIcon32x32.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Converters\" />
+    <Folder Include="Formatters\Xml\ValueFormatters\Formatters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\PackageIcon32x32.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

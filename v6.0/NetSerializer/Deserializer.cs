@@ -3,9 +3,9 @@ using NetSerializer.V6.Formatters;
 namespace NetSerializer.V6 {
 
     public sealed class Deserializer {
-        
+
         private readonly DeserializationContext _context;
-        
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -15,7 +15,7 @@ namespace NetSerializer.V6 {
 
             _context = new DeserializationContext(reader);
         }
-        
+
         /// <summary>
         /// Deserialitza un objecte.
         /// </summary>
@@ -26,7 +26,7 @@ namespace NetSerializer.V6 {
 
             return _context.ReadObject<T>(name);
         }
-        
+
         /// <summary>
         /// El context de deserialitzacio.
         /// </summary>

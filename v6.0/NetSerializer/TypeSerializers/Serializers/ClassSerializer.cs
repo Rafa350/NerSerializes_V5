@@ -68,45 +68,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                 var name = propertyDescriptor.Name;
                 var value = propertyDescriptor.GetValue(obj);
 
-                if (value == null)
-                    context.WriteNull(name);
-
-                else {
-                    var type = value.GetType();
-
-                    if (type == typeof(bool))
-                        context.WriteBool(name, (bool)value);
-
-                    else if (type == typeof(int))
-                        context.WriteInt(name, (int)value);
-
-                    else if (type == typeof(float))
-                        context.WriteSingle(name, (float)value);
-
-                    else if (type == typeof(double))
-                        context.WriteDouble(name, (double)value);
-
-                    else if (type == typeof(decimal))
-                        context.WriteDecimal(name, (decimal)value);
-
-                    else if (type == typeof(string))
-                        context.WriteString(name, (string)value);
-
-                    else if (type.IsEnum)
-                        context.WriteEnum(name, (Enum)value);
-
-                    else if (type.IsStructType())
-                        context.WriteStruct(name, value);
-
-                    else if (type.IsClassType())
-                        context.WriteObject(name, value);
-
-                    else if (type.IsArray)
-                        context.WriteArray(name, (Array) value);
-
-                    else
-                        throw new InvalidOperationException($"No es posible serializar la propiedad '{name}', de tipo '{type}'.");
-                }
+                context.Write(name, value);
             }
         }
 
@@ -150,38 +112,7 @@ namespace NetSerializer.V6.TypeSerializers.Serializers {
                 var name = propertyDescriptor.Name;
                 var type = propertyDescriptor.Type;
 
-                if (type == typeof(bool))
-                    propertyDescriptor.SetValue(obj, context.ReadBool(name));
-
-                else if (type == typeof(int))
-                    propertyDescriptor.SetValue(obj, context.ReadInt(name));
-
-                else if (type == typeof(float))
-                    propertyDescriptor.SetValue(obj, context.ReadSingle(name));
-
-                else if (type == typeof(double))
-                    propertyDescriptor.SetValue(obj, context.ReadDouble(name));
-
-                else if (type == typeof(decimal))
-                    propertyDescriptor.SetValue(obj, context.ReadDecimal(name));
-
-                else if (type == typeof(string))
-                    propertyDescriptor.SetValue(obj, context.ReadString(name));
-
-                else if (type.IsEnum)
-                    propertyDescriptor.SetValue(obj, context.ReadEnum(name, propertyDescriptor.Type));
-
-                else if (type.IsStructType())
-                    propertyDescriptor.SetValue(obj, context.ReadStruct(name, propertyDescriptor.Type));
-
-                else if (type.IsClassType())
-                    propertyDescriptor.SetValue(obj, context.ReadObject(name, propertyDescriptor.Type));
-
-                else if (type.IsArray)
-                    propertyDescriptor.SetValue(obj, context.ReadArray(name, propertyDescriptor.Type));
-
-                else
-                    throw new InvalidOperationException($"No es posible deserializar la propiedad '{name}' de tipo '{type}'.");
+                propertyDescriptor.SetValue(obj, context.Read(name, type));
             }
         }
 
