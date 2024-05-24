@@ -36,22 +36,64 @@
         /// 
         public abstract object? ReadValue(string name, Type type);
 
+        /// <summary>
+        /// Llegeix un valor boolean.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract bool ReadBool(string name);
 
+        /// <summary>
+        /// Llegeix un valor int.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract int ReadInt(string name);
 
+        /// <summary>
+        /// Llegeix un valor float.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract float ReadSingle(string name);
 
+        /// <summary>
+        /// Llegeix un valor double.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract double ReadDouble(string name);
 
+        /// <summary>
+        /// Llegeix un valor decimal.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract decimal ReadDecimal(string name);
 
         public abstract T ReadEnum<T>(string name) where T : struct;
 
         public abstract object ReadEnum(string name, Type type);
 
+        /// <summary>
+        /// Llegeix un valor char.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract char ReadChar(string name);
 
+        /// <summary>
+        /// Llegeix un valor string.
+        /// </summary>
+        /// <param name="name">El nom.</param>
+        /// <returns>El resultat de la lectura.</returns>
+        /// 
         public abstract string? ReadString(string name);
 
         public abstract ObjectHeaderType ReadObjectHeader(string name, out int id, out Type type);
