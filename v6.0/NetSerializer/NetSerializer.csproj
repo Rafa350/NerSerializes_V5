@@ -13,6 +13,7 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\Rafael\Documents\Projectes\Net\NetSerializer\v6.0\Signature\NetSerializerKeyPair.snk</AssemblyOriginatorKeyFile>
     <PackageIcon>PackageIcon32x32.png</PackageIcon>
+    <Description>Net data serializer/deserializer</Description>
   </PropertyGroup>
 
   <ItemGroup>
